@@ -1,0 +1,3 @@
+﻿namespace ClosedXML.MapperExtensions
+{
+}
