@@ -1,3 +1,5 @@
+using ClosedXML.Excel;
+
 namespace ClosedXML.MapperExtensions.Tests
 {
     public class MapperTest
@@ -13,6 +15,15 @@ namespace ClosedXML.MapperExtensions.Tests
 
             var workbook = XLMapper.ExportToExcel(data);
             workbook.SaveAs("testData.xlsx");
+
+            var mapperConfig = new XLMapperConfig
+            {
+                HeaderRowNumber = 2,
+                FreezeColumnNumber = 2,
+                XLTableTheme = XLTableTheme.TableStyleMedium13 // samples: https://c-rex.net/samples/ooxml/e1/Part4/OOXML_P4_DOCX_tableStyle_topic_ID0EFIO6.html
+            };
+            var workbook2 = XLMapper.ExportToExcel(data, mapperConfig);
+            workbook2.SaveAs("testData2.xlsx"); 
         }
     }
 
@@ -21,21 +32,21 @@ namespace ClosedXML.MapperExtensions.Tests
         [XLColumnExtended(Header = nameof(ItemId))]
         public int ItemId { get; set; }
 
-        [XLColumnExtended(Header = "Full Name", Order = 2, Width = 20)]
-        public string Name { get; set; }
-
-        [XLColumnExtended(Header = "Active", Order = 1)]
+        [XLColumnExtended(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order foes first with attribute XLCol. (0 is default) and last are without attribute
         public bool IsActive { get; set; }
+
+        [XLColumnExtended(Header = "Full Name", Order = 1, Width = 20)]
+        public string Name { get; set; }
 
         public int Amount { get; set; }
 
         public decimal Price { get; set; }
 
-        [XLColumnExtended(Format = "#,###.000")] // Custom Format with 3 decimal places
+        [XLColumnExtended(FormatId = 14, Order = 4)] // Custom Format with 3 decimal places
         public decimal? Weight { get; set; }
 
         [XLColumnExtended(Header = "Created", Order = 3)]
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         public string Note { get; set; }
 

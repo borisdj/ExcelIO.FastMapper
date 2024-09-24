@@ -10,10 +10,18 @@ namespace ClosedXML.MapperExtensions
     {
         public string Format { get; set; }
 
+        public int FormatId { get; set; } = -1;
+
         internal static string GetFormat(MemberInfo mi)
         {
             var attribute = mi.GetAttributes<XLColumnExtendedAttribute>()?.FirstOrDefault();
             return attribute?.Format;
+        }
+
+        internal static int? GetFormatId(MemberInfo mi)
+        {
+            var attribute = mi.GetAttributes<XLColumnExtendedAttribute>()?.FirstOrDefault();
+            return attribute?.FormatId;
         }
 
         public int Width { get; set; }

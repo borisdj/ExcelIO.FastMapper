@@ -7,28 +7,15 @@ using System.Reflection;
 
 namespace ClosedXML.MapperExtensions
 {
-    public class XLColumnMapperInfo
-    {
-        public Type ColumnType { get; set; }
-        public string ColumnName { get; set; }
-
-        public bool HasColumnAttribute { get; set; }
-
-        public string Header { get; set; }
-        public int Order { get; set; }
-        public string Format { get; set; }
-        public int Width { get; set; }
-
-        public int Position { get; set; }
-    }
-
     public static class XLMapper
     {
-        public static XLWorkbook ExportToExcel<T>(List<T> data, string sheetName = "Data") where T : class
+        public static XLWorkbook ExportToExcel<T>(List<T> data, XLMapperConfig xlMapperConfig = null) where T : class
         {
+            xlMapperConfig = xlMapperConfig ?? new XLMapperConfig();
+
             var workbook = new XLWorkbook();
-            var worksheet = workbook.AddWorksheet(sheetName);
-            var table = worksheet.Cell(1, 1).InsertTable(data);
+            var worksheet = workbook.AddWorksheet(xlMapperConfig.SheetName);
+            var table = worksheet.Cell(xlMapperConfig.HeaderRowNumber, 1).InsertTable(data);
 
             var MemberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
             var itemType = typeof(T);
@@ -54,6 +41,7 @@ namespace ClosedXML.MapperExtensions
                     mapperInfo.Header = attributeExtended.Header;
                     mapperInfo.Order = attributeExtended.Order;
                     mapperInfo.Format = attributeExtended.Format;
+                    mapperInfo.FormatId = attributeExtended.FormatId;
                     mapperInfo.Width = attributeExtended.Width;
                     mapperInfo.HasColumnAttribute = true;
                 }
@@ -79,18 +67,50 @@ namespace ClosedXML.MapperExtensions
             {
                 var column = row.Field(columnInfo.ColumnName).WorksheetColumn(); // if used table.Column(colNumber); then formated only till last row and not entire column
 
-                var format = !string.IsNullOrEmpty(columnInfo.Format) ? columnInfo.Format
-                                                                      : GetDefaultFormatForType(columnInfo.ColumnType);
-                column.Style.NumberFormat.Format = "#,##0.00";
+                if (columnInfo.FormatId >= 0)
+                {
+                    column.Style.NumberFormat.NumberFormatId = columnInfo.FormatId;
+                }
 
-                column.Width = columnInfo.Width > 0 ? columnInfo.Width
-                                                    : GetWidthForHeaderAndType(columnInfo); //columnInfo.ColumnName.Length * 1.5;
+                if (!string.IsNullOrEmpty(columnInfo.Format) || xlMapperConfig.UseDefaultColumnFormat)
+                {
+                    var format = !string.IsNullOrEmpty(columnInfo.Format) ? columnInfo.Format
+                                                                          : GetDefaultFormatForType(columnInfo.ColumnType);
+                    column.Style.NumberFormat.Format = format;
+                }
+
+                if(xlMapperConfig.UseDynamicColumnWidht)
+                {
+                    column.Width = columnInfo.Width > 0 ? columnInfo.Width
+                                                        : GetWidthForHeader(columnInfo);
+                }
             }
 
-            worksheet.SheetView.FreezeRows(1);
+
+            // FREEZE
+            if(xlMapperConfig.FreezeHeader)
+                worksheet.SheetView.FreezeRows(xlMapperConfig.HeaderRowNumber);
+            if (xlMapperConfig.FreezeColumnNumber > 0)
+                worksheet.SheetView.FreezeColumns(xlMapperConfig.FreezeColumnNumber);
+
+            // FONTS
+            var dataFont = table.Style.Font;
+            if (xlMapperConfig.DataFont != null)
+                dataFont.FontName = xlMapperConfig.DataFont;
+            if (xlMapperConfig.DataFontSize != null)
+                dataFont.FontSize = (double)xlMapperConfig.DataFontSize;
 
             var headerFont = table.Row(1).Style.Font;
-            headerFont.FontName = "Arial Narrow";
+            if(xlMapperConfig.HeaderFont != null)
+                headerFont.FontName = xlMapperConfig.HeaderFont;
+            if (xlMapperConfig.HeaderFontSize != null)
+                headerFont.FontSize = (double)xlMapperConfig.HeaderFontSize;
+
+            // THEME
+            if (xlMapperConfig.XLTableTheme != null)
+            {
+                table.Theme = xlMapperConfig.XLTableTheme;
+            }
 
             return workbook;
         }
@@ -107,31 +127,31 @@ namespace ClosedXML.MapperExtensions
             }
             else if (columnType == typeof(string))
             {
-                format = "@";
+                format = XLFormatCodesFrequent.Text.FormatCode; // "@"
             }
             else if (columnType == typeof(byte) || columnType == typeof(byte?) ||
-                     columnType == typeof(short) || columnType == typeof(short?) ||
-                     columnType == typeof(int) || columnType == typeof(int?) ||
+                     columnType == typeof(short)|| columnType == typeof(short?) ||
+                     columnType == typeof(int)  || columnType == typeof(int?) ||
                      columnType == typeof(long) || columnType == typeof(long?))
             {
-                format = "#,##0";
+                format = XLFormatCodesFrequent.IntegerWithThousandSeparator.FormatCode; // "#,##0"
             }
-            else if (columnType == typeof(decimal) || columnType == typeof(decimal?) ||
-                     columnType == typeof(float) || columnType == typeof(float?) ||
+            else if (columnType == typeof(decimal)|| columnType == typeof(decimal?) ||
+                     columnType == typeof(float)  || columnType == typeof(float?) ||
                      columnType == typeof(double) || columnType == typeof(double?))
             {
-                format = "#,##0.00";
+                format = XLFormatCodesFrequent.Decimals2WithThousandSeparator.FormatCode; // "#,##0.00"
             }
             else if (columnType == typeof(DateTime) || columnType == typeof(DateTime?)) // Date, Time only
             {
-                format = "m/d/yyyy";
+                format = XLFormatCodesFrequent.DateDBFormat; // "yyyy-mm-dd"
             }
 
             return format;
         }
 
 
-        public static int GetWidthForHeaderAndType(XLColumnMapperInfo columnInfo)
+        public static int GetWidthForHeader(XLColumnMapperInfo columnInfo)
         {
             int width = (int)(Math.Min(Math.Max(columnInfo.ColumnName.Length, 5), 15) * 1.6);
             return width;
