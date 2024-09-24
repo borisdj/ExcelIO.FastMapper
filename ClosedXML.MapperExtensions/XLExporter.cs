@@ -72,7 +72,7 @@ namespace ClosedXML.MapperExtensions
                     column.Style.NumberFormat.NumberFormatId = columnInfo.FormatId;
                 }
 
-                if (!string.IsNullOrEmpty(columnInfo.Format) || xlMapperConfig.UseDefaultColumnFormat)
+                if (xlMapperConfig.UseDefaultColumnFormat || !string.IsNullOrEmpty(columnInfo.Format)) // default or custom Format
                 {
                     var format = !string.IsNullOrEmpty(columnInfo.Format) ? columnInfo.Format
                                                                           : GetDefaultFormatForType(columnInfo.ColumnType);
@@ -81,11 +81,11 @@ namespace ClosedXML.MapperExtensions
 
                 if(xlMapperConfig.UseDynamicColumnWidht)
                 {
-                    column.Width = columnInfo.Width > 0 ? columnInfo.Width
-                                                        : GetWidthForHeader(columnInfo);
+                    var width = columnInfo.Width > 0 ? columnInfo.Width
+                                                     : GetWidthForHeader(columnInfo);
+                    column.Width = width;
                 }
             }
-
 
             // FREEZE
             if(xlMapperConfig.FreezeHeader)
@@ -127,14 +127,14 @@ namespace ClosedXML.MapperExtensions
             }
             else if (columnType == typeof(string))
             {
-                format = XLFormatCodesFrequent.Text.FormatCode; // "@"
+                format = XLFormatCodesFrequent.Text.FormatCode;                           // "@"
             }
             else if (columnType == typeof(byte) || columnType == typeof(byte?) ||
                      columnType == typeof(short)|| columnType == typeof(short?) ||
                      columnType == typeof(int)  || columnType == typeof(int?) ||
                      columnType == typeof(long) || columnType == typeof(long?))
             {
-                format = XLFormatCodesFrequent.IntegerWithThousandSeparator.FormatCode; // "#,##0"
+                format = XLFormatCodesFrequent.IntegerWithThousandSeparator.FormatCode;   // "#,##0"
             }
             else if (columnType == typeof(decimal)|| columnType == typeof(decimal?) ||
                      columnType == typeof(float)  || columnType == typeof(float?) ||
@@ -142,9 +142,17 @@ namespace ClosedXML.MapperExtensions
             {
                 format = XLFormatCodesFrequent.Decimals2WithThousandSeparator.FormatCode; // "#,##0.00"
             }
-            else if (columnType == typeof(DateTime) || columnType == typeof(DateTime?)) // Date, Time only
+            else if (columnType == typeof(DateTime) || columnType == typeof(DateTime?))
             {
-                format = XLFormatCodesFrequent.DateDBFormat; // "yyyy-mm-dd"
+                format = XLFormatCodesFrequent.DateTimeShort.FormatCode;                  // "d/m/yyyy"
+            }
+            else if (columnType.Name == "DateOnly")
+            {
+                format = XLFormatCodesFrequent.DateShort.FormatCode;                      // "d/m/yyyy"
+            }
+            else if (columnType.Name == "TimeOnly" )
+            {
+                format = XLFormatCodesFrequent.TimeShort.FormatCode;                      // "H:mm"
             }
 
             return format;

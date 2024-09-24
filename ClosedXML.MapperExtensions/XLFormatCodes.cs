@@ -9,6 +9,7 @@
     public static class XLFormatCodesFrequent
     {
         public static XLFormat General => XLFormatCodes.C0;                         // "General"
+        public static XLFormat Text => XLFormatCodes.C49;                           // "@"
 
         public static XLFormat Integer => XLFormatCodes.C1;                         // "0"
         public static XLFormat IntegerWithThousandSeparator => XLFormatCodes.C3;    // "#,##0"
@@ -17,14 +18,18 @@
         public static XLFormat IntegerPercentage => XLFormatCodes.C9;               // "0%"
         public static XLFormat Decimals2Percentage => XLFormatCodes.C10;            // "0.00%"
 
+        public static XLFormat TimeShort => XLFormatCodes.C20;                      // "H:mm"
+        public static XLFormat TimeLong => XLFormatCodes.C21;                       // "H:mm:ss"
         public static XLFormat DateShort => XLFormatCodes.C14;                      // "d/m/yyyy"
-        public static XLFormat DateLong => XLFormatCodes.C15;                       // "d/mm/yyyy"
+        public static XLFormat DateTimeShort => XLFormatCodes.C22;                  // "m/d/yyyy H:mm"
 
-        public static XLFormat DateTime => XLFormatCodes.C22;                       // "m/d/yyyy H:mm"
+        public const string DateLong = "dd/mm/yyyy";
 
-        public static XLFormat Text => XLFormatCodes.C49;                           // "@"
+        public const string DateTimeLong = "dd/mm/yyyy H:mm:ss";
+
 
         public const string DateDBFormat = "yyyy-MM-dd";
+
         public const string YesNo = @"""Yes"";;""No""";
     }
 
