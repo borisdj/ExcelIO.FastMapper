@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClosedXML.MapperExtensions\ClosedXML.MapperExtensions.csproj" />
-    <ProjectReference Include="..\ClosedXML.Mapper\ClosedXML.MapperExtensions.csproj" />
   </ItemGroup>
 
 </Project>
