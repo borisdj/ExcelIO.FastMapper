@@ -19,7 +19,7 @@ namespace ClosedXML.MapperExtensions
         /// <summary>
         /// Initial value True is which case default Widht is set based on Header length, with min 5 and max 15 multiplied by 1.6
         /// /</summary>
-        public bool UseDynamicColumnWidht { get; set; } = true;
+        public bool UseDynamicColumnWidth { get; set; } = true;
 
         /// <summary>
         /// Initial value is '1', if changed to 2 or 3 then there will be one or two empty rows above header line

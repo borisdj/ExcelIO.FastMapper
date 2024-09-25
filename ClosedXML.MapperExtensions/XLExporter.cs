@@ -85,7 +85,7 @@ namespace ClosedXML.MapperExtensions
                     column.Style.NumberFormat.Format = format;
                 }
 
-                if(xlMapperConfig.UseDynamicColumnWidht)
+                if(xlMapperConfig.UseDynamicColumnWidth)
                 {
                     var width = columnInfo.Width > 0 ? columnInfo.Width
                                                      : GetWidthForHeader(columnInfo);
