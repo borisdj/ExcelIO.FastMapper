@@ -140,25 +140,25 @@ namespace ClosedXML.MapperExtensions
                      columnType == typeof(int)  || columnType == typeof(int?) ||
                      columnType == typeof(long) || columnType == typeof(long?))
             {
-                format = XLFormatCodesFrequent.IntegerWithThousandSeparator.FormatCode;   // "#,##0"
+                format = XLFormatCodesFrequent.ThousandInteger.FormatCode;   // "#,##0"
             }
             else if (columnType == typeof(decimal)|| columnType == typeof(decimal?) ||
                      columnType == typeof(float)  || columnType == typeof(float?) ||
                      columnType == typeof(double) || columnType == typeof(double?))
             {
-                format = XLFormatCodesFrequent.Decimals2WithThousandSeparator.FormatCode; // "#,##0.00"
+                format = XLFormatCodesFrequent.ThousandDecimals2.FormatCode; // "#,##0.00"
             }
             else if (columnType == typeof(DateTime) || columnType == typeof(DateTime?))
             {
-                format = XLFormatCodesFrequent.DateTimeShort.FormatCode;                  // "d/m/yyyy"
+                format = XLFormatCodesFrequent.ShortDateTime.FormatCode;                  // "d/m/yyyy"
             }
             else if (columnType.Name == "DateOnly") // DateOnly type not in NetStandard2.0
             {
-                format = XLFormatCodesFrequent.DateShort.FormatCode;                      // "d/m/yyyy"
+                format = XLFormatCodesFrequent.ShortDate.FormatCode;                      // "d/m/yyyy"
             }
             else if (columnType.Name == "TimeOnly") // TimeOnly type not in NetStandard2.0
             {
-                format = XLFormatCodesFrequent.TimeShort.FormatCode;                      // "H:mm"
+                format = XLFormatCodesFrequent.ShortTime.FormatCode;                      // "H:mm"
             }
 
             return format;
