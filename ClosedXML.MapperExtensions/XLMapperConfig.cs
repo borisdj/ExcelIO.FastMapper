@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using System.Collections.Generic;
 
 namespace ClosedXML.MapperExtensions
 {
@@ -59,5 +60,10 @@ namespace ClosedXML.MapperExtensions
         /// If not set custom number, default value from base libary is '11'
         /// </summary>
         public double? DataFontSize { get; set; }
+
+        /// <summary>
+        ///     Enables Attributes to be defined at runtime, for all usage types. Dict with PropertyName and independent Attribute with parameters values.
+        /// </summary>
+        public Dictionary<string, XLColumnExtendedAttribute> DynamicSettings { get; set; }
     }
 }

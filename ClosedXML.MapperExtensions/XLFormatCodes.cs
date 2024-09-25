@@ -25,6 +25,10 @@
 
         public const string DateLong = "dd/mm/yyyy";
 
+        public const string DateMonthName = "mmmm dd, yyyy";     // 2020/1/1 => Jan 01, 2020
+
+        public const string DateMonthNameFull = "mmmm dd, yyyy"; // 2020/1/1 => January 01, 2020
+
         public const string DateTimeLong = "dd/mm/yyyy H:mm:ss";
 
 

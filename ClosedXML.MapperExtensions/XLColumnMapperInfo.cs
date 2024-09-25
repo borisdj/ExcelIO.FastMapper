@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ClosedXML.MapperExtensions
 {
@@ -16,5 +17,7 @@ namespace ClosedXML.MapperExtensions
         public int Width { get; set; }
 
         public int Position { get; set; }
+
+        public Dictionary<string, XLColumnExtendedAttribute> DynamicSettings { get; set; }
     }
 }

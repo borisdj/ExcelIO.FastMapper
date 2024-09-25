@@ -17,46 +17,52 @@ namespace ClosedXML.MapperExtensions
             var worksheet = workbook.AddWorksheet(xlMapperConfig.SheetName);
             var table = worksheet.Cell(xlMapperConfig.HeaderRowNumber, 1).InsertTable(data);
 
-            var MemberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+            var memberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
             var itemType = typeof(T);
-            var itemsDict = itemType.GetFields(MemberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
-            var propertiesDict = itemType.GetProperties(MemberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
-            var members = itemType.GetFields(MemberBindingFlags).Cast<MemberInfo>().Concat(itemType.GetProperties(MemberBindingFlags));
+            var itemsDict = itemType.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
+            var propertiesDict = itemType.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
+            var membersData = itemType.GetFields(memberBindingFlags).Cast<MemberInfo>().Concat(itemType.GetProperties(memberBindingFlags));
+            var dynamicSettings = xlMapperConfig.DynamicSettings;
 
             var mappersInfo = new List<XLColumnMapperInfo>();
-            foreach (var memberInfo in members)
+            foreach (var member in membersData)
             {
-                var attributeExtended = memberInfo.GetAttributes<XLColumnExtendedAttribute>().FirstOrDefault();
-                var attribute = memberInfo.GetAttributes<XLColumnAttribute>().FirstOrDefault();
+                var attributeExtended = member.GetAttributes<XLColumnExtendedAttribute>().FirstOrDefault();
+                var attribute = member.GetAttributes<XLColumnAttribute>().FirstOrDefault();
 
-                var mapperInfo = new XLColumnMapperInfo()
+                if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
                 {
-                    ColumnType = memberInfo.MemberType == MemberTypes.Property ? propertiesDict[memberInfo.Name]
-                                                                               : itemsDict[memberInfo.Name],
-                    ColumnName = attributeExtended?.Header ?? attribute?.Header ?? memberInfo.Name,
+                    attribute = dynamicSettings[member.Name];
+                }
+
+                var mapper = new XLColumnMapperInfo()
+                {
+                    ColumnType = member.MemberType == MemberTypes.Property ? propertiesDict[member.Name]
+                                                                           : itemsDict[member.Name],
+                    ColumnName = attributeExtended?.Header ?? attribute?.Header ?? member.Name,
                 };
 
                 if (attributeExtended != null && !attributeExtended.Ignore)
                 {
-                    mapperInfo.Header = attributeExtended.Header;
-                    mapperInfo.Order = attributeExtended.Order;
-                    mapperInfo.Format = attributeExtended.Format;
-                    mapperInfo.FormatId = attributeExtended.FormatId;
-                    mapperInfo.Width = attributeExtended.Width;
-                    mapperInfo.HasColumnAttribute = true;
+                    mapper.Header = attributeExtended.Header;
+                    mapper.Order = attributeExtended.Order;
+                    mapper.Format = attributeExtended.Format;
+                    mapper.FormatId = attributeExtended.FormatId;
+                    mapper.Width = attributeExtended.Width;
+                    mapper.HasColumnAttribute = true;
                 }
                 else if (attribute != null && !attribute.Ignore)
                 {
-                    mapperInfo.Header = attribute.Header;
-                    mapperInfo.Order = attribute.Order;
-                    mapperInfo.Width = attributeExtended.Width;
-                    mapperInfo.HasColumnAttribute = true;
+                    mapper.Header = attribute.Header;
+                    mapper.Order = attribute.Order;
+                    mapper.Width = attributeExtended.Width;
+                    mapper.HasColumnAttribute = true;
                 }
                 else
                 {
-                    mapperInfo.HasColumnAttribute = false;
+                    mapper.HasColumnAttribute = false;
                 }
-                mappersInfo.Add(mapperInfo);
+                mappersInfo.Add(mapper);
             }
             var columnsInfoWithoutAttribute = mappersInfo.Where(a => !a.HasColumnAttribute).ToList();
             mappersInfo = mappersInfo.Where(a => a.HasColumnAttribute).OrderBy(a => a.Order).ToList();
@@ -146,18 +152,17 @@ namespace ClosedXML.MapperExtensions
             {
                 format = XLFormatCodesFrequent.DateTimeShort.FormatCode;                  // "d/m/yyyy"
             }
-            else if (columnType.Name == "DateOnly")
+            else if (columnType.Name == "DateOnly") // DateOnly type not in NetStandard2.0
             {
                 format = XLFormatCodesFrequent.DateShort.FormatCode;                      // "d/m/yyyy"
             }
-            else if (columnType.Name == "TimeOnly" )
+            else if (columnType.Name == "TimeOnly") // TimeOnly type not in NetStandard2.0
             {
                 format = XLFormatCodesFrequent.TimeShort.FormatCode;                      // "H:mm"
             }
 
             return format;
         }
-
 
         public static int GetWidthForHeader(XLColumnMapperInfo columnInfo)
         {
