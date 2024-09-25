@@ -12,10 +12,10 @@ namespace ClosedXML.MapperExtensions.Tests
                 new() { ItemId = 1, IsActive = true, Name = "Monitor", Amount = 2, Price = 1234.56m, Weight = 2.345m, DateCreated = DateTime.Now, Note = "info", TimeCreated = new TimeOnly(1,1) },
                 new() { ItemId = 2, IsActive = false, Name = "Keyboard k2 ", Amount = 1000, Price = 9.2m }
             };
-            var xlsxSufix = "xlsx";
+            var xlsxExtension = ".xlsx";
 
             var workbook = XLMapper.ExportToExcel(data);
-            workbook.SaveAs("testData." + xlsxSufix);
+            workbook.SaveAs("testData" + xlsxExtension);
 
             var mapperConfig = new XLMapperConfig
             {
@@ -24,7 +24,7 @@ namespace ClosedXML.MapperExtensions.Tests
                 XLTableTheme = XLTableTheme.TableStyleMedium13 // samples: https://c-rex.net/samples/ooxml/e1/Part4/OOXML_P4_DOCX_tableStyle_topic_ID0EFIO6.html
             };
             var workbook2 = XLMapper.ExportToExcel(data, mapperConfig);
-            workbook2.SaveAs("testData2." + xlsxSufix); 
+            workbook2.SaveAs("testData2" + xlsxExtension); 
         }
     }
 
@@ -33,7 +33,7 @@ namespace ClosedXML.MapperExtensions.Tests
         [XLColumnExtended(Header = nameof(ItemId))]
         public int ItemId { get; set; }
 
-        [XLColumnExtended(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order foes first with attribute XLCol. (0 is default) and last are without attribute
+        [XLColumnExtended(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order goes first with attribute XLCol. (0 is default) and those without attribute come last
         public bool IsActive { get; set; }
 
         [XLColumnExtended(Header = "Full Name", Order = 1, Width = 20)]
