@@ -52,12 +52,12 @@ namespace ClosedXML.MapperExtensions
         public string DataFont { get; set; }
 
         /// <summary>
-        /// If not set custom number, default value from base libary is '11'
+        /// If not set custom number, default value from base library is '11'
         /// </summary>
         public double? HeaderFontSize { get; set; }
 
         /// <summary>
-        /// If not set custom number, default value from base libary is '11'
+        /// If not set custom number, default value from base library is '11'
         /// </summary>
         public double? DataFontSize { get; set; }
 
