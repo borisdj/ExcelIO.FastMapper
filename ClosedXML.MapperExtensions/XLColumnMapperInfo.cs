@@ -16,8 +16,10 @@ namespace ClosedXML.MapperExtensions
         public int FormatId { get; set; }
         public int Width { get; set; }
 
+        public FormulaType HeaderFormulaType { get; set; }
+
         public int Position { get; set; }
 
-        public Dictionary<string, XLColumnExtendedAttribute> DynamicSettings { get; set; }
+        public Dictionary<string, XLColumnExtAttribute> DynamicSettings { get; set; }
     }
 }

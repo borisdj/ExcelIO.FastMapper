@@ -17,13 +17,28 @@ namespace ClosedXML.MapperExtensions
         public bool UseDefaultColumnFormat { get; set; } = true;
 
         /// <summary>
-        /// Initial value True is which case default Widht is set based on Header length, with min 5 and max 15 multiplied by 1.6
+        /// Initial value True when Header has Filter combo visible
+        /// /</summary>
+        public bool AutoFilterVisible { get; set; } = true;
+
+        /// <summary>
+        /// Initial value True is which case default Width is set based on Header length, with min 5 and max 15 multiplied by DynamicColumnWidthCoefficient
         /// /</summary>
         public bool UseDynamicColumnWidth { get; set; } = true;
 
         /// <summary>
-        /// Initial value is '1', if changed to 2 or 3 then there will be one or two empty rows above header line
+        /// Initial value 'False', when set to True header is Wraped
         /// /</summary>
+        public bool WrapHeader { get; set; } = false;
+
+        /// <summary>
+        /// Has initial value of 1.6; Used when DynamicColumnWidth is True, Coefficient multiples ColumnName Lenght to calcule Width
+        /// /</summary>
+        public decimal DynamicColumnWidthCoefficient { get; set; } = 1.6m;
+
+        /// <summary>
+        /// Initial value is '1', if changed to 2 or 3 then there will be one or two empty rows above header line
+        /// </summary>
         public int HeaderRowNumber { get; set; } = 1;
 
         /// <summary>
@@ -42,9 +57,14 @@ namespace ClosedXML.MapperExtensions
         public string HeaderFont { get; set; } = "Arial Narrow";
 
         /// <summary>
-        /// Table Style type
+        /// Table Theme type
         /// </summary>
         public XLTableTheme XLTableTheme { get; set; }
+
+        /// <summary>
+        /// Table Style
+        /// </summary>
+        public IXLStyle XLStyle { get; set; }
 
         /// <summary>
         /// Default value: 'Calibri'
@@ -64,6 +84,6 @@ namespace ClosedXML.MapperExtensions
         /// <summary>
         ///     Enables Attributes to be defined at runtime, for all usage types. Dict with PropertyName and independent Attribute with parameters values.
         /// </summary>
-        public Dictionary<string, XLColumnExtendedAttribute> DynamicSettings { get; set; }
+        public Dictionary<string, XLColumnExtAttribute> DynamicSettings { get; set; }
     }
 }
