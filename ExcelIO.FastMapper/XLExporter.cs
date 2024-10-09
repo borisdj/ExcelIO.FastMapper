@@ -1,4 +1,5 @@
-﻿using ClosedXML.Attributes;
+﻿using ClosedXML;
+using ClosedXML.Attributes;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -6,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ClosedXML.MapperExtensions
+namespace ExcelIO.FastMapper
 {
     public static class XLMapper
     {

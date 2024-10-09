@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClosedXML.MapperExtensions", "ClosedXML.MapperExtensions\ClosedXML.MapperExtensions.csproj", "{E5F024FD-016E-475B-A3C6-FF0FFBB4DF41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelIO.FastMapper", "ExcelIO.FastMapper\ExcelIO.FastMapper.csproj", "{E5F024FD-016E-475B-A3C6-FF0FFBB4DF41}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClosedXML.MapperExtensions.Tests", "ClosedXML.MapperExtensions.Tests\ClosedXML.MapperExtensions.Tests.csproj", "{1DDC9BFE-4B7B-4AEE-A2D9-ECF027ECDE5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelIO.FastMapper.Tests", "ExcelIO.FastMapper.Tests\ExcelIO.FastMapper.Tests.csproj", "{1DDC9BFE-4B7B-4AEE-A2D9-ECF027ECDE5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

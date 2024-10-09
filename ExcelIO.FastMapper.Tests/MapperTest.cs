@@ -2,7 +2,7 @@ using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Office2013.Excel;
 using LargeXlsx;
 
-namespace ClosedXML.MapperExtensions.Tests
+namespace ExcelIO.FastMapper.Tests
 {
     public class MapperTest
     {

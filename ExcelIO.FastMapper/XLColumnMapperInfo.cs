@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ClosedXML.MapperExtensions
+namespace ExcelIO.FastMapper
 {
     public class XLColumnMapperInfo
     {

@@ -1,9 +1,10 @@
-﻿using ClosedXML.Attributes;
+﻿using ClosedXML;
+using ClosedXML.Attributes;
 using System;
 using System.Linq;
 using System.Reflection;
 
-namespace ClosedXML.MapperExtensions
+namespace ExcelIO.FastMapper
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class XLColumnExtAttribute : XLColumnAttribute // Extended Attribute

@@ -1,4 +1,4 @@
-﻿namespace ClosedXML.MapperExtensions
+﻿namespace ExcelIO.FastMapper
 {
     public class XLFormat
     {
