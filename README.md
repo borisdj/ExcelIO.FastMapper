@@ -2,7 +2,7 @@
 Excel IO Mapper Import and Export to and from Poco class and xlsx file using attribute annotation on model Properties and having columns formatting.  
 Both Reading and Writing are very fast while the package is lightweight with minimum depencencies.
 
-Attributes:
+Attributes:  
 [ExcelColumn]
 
 Under the hood libary uses fastest packages: Sylvan.Data.Excel for Input, and LargeXlsx for Output.  
