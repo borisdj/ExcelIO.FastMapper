@@ -6,7 +6,8 @@ Both Reading and Writing are **very fast** while the package itself is lightweig
 Attributes:  
 `[ExcelColumn]`
 
-Under the hood libary uses most efficient packages in their domain:  
+Under the hood library uses most efficient packages in their domain:  
+<a href="https://github.com/MarkPflug/Sylvan.Data.Excel" target="_blank">Sylvan.Data.Excel</a>  
 -[Sylvan.Data.Excel](https://github.com/MarkPflug/Sylvan.Data.Excel){:target="_blank"} for Reading  
 -[LargeXlsx](https://github.com/salvois/LargeXlsx) for Writing as it has formatting option but is still pretty quick.  
 Library has only those 2 dependecies that themselves are fully self-containd, and as such are quite thin.  
