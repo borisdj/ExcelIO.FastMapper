@@ -20,6 +20,6 @@ namespace ExcelIO.FastMapper
 
         public int Position { get; set; }
 
-        public Dictionary<string, XLColumnExtAttribute> DynamicSettings { get; set; }
+        public Dictionary<string, ExcelColumnAttribute> DynamicSettings { get; set; }
     }
 }

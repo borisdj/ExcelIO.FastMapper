@@ -2,18 +2,81 @@
 using ClosedXML.Attributes;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using LargeXlsx;
+using SharpCompress.Compressors.Xz;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace ExcelIO.FastMapper
 {
-    public static class XLMapper
+    public static class ExcelHandler
     {
-        public static XLWorkbook ExportToExcel<T>(List<T> data, XLMapperConfig xlMapperConfig = null) where T : class
+        public static void ExportToExcelLarge<T>(List<T> data0, ExcelIOMapperConfig xlMapperConfig = null, MemoryStream memoryStreamExternal = null) where T : class
         {
-            xlMapperConfig = xlMapperConfig ?? new XLMapperConfig();
+            var data = new List<Item0>();
+            for (int i = 1; i < 100_000; i++)
+            {
+                var item = new Item0
+                {
+                    ItemId = i,
+                    IsActive = true,
+                    Name = "Monitor" + i,
+                    Amount = 2 + i,
+                    Price = 1234.56m + i,
+                    Weight = 2.345m + i,
+                    DateCreated = DateTime.Now,
+                    Note = "info" + i,
+                    //TimeCreated = new TimeOnly(1, 1)
+                };
+                data.Add(item);
+            }
+
+            MemoryStream memoryStream = null;
+            using (memoryStreamExternal == null ? memoryStream = new MemoryStream() : null)
+            {
+                memoryStream = memoryStream ?? memoryStreamExternal;
+                using (var xlsxWriter = new XlsxWriter(memoryStream))
+                {
+                    var xlsxColumns = new List<XlsxColumn>();
+                    for (int i = 1; i <= 9; i++)
+                    {
+                        xlsxColumns.Add(XlsxColumn.Unformatted());
+                    }
+                    xlsxColumns[3] = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger), width: 20);
+                    xlsxColumns[4] = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal), width: 20);
+
+                    XlsxWriter xlsxWriterSheet = xlsxWriter.BeginWorksheet("Sheet 1", columns: xlsxColumns);
+
+                    foreach (var element in data)
+                    {
+                        var row = xlsxWriterSheet.BeginRow()
+                            .Write(element.ItemId)
+                            .Write(element.IsActive)
+                            .Write(element.Name)
+                            .Write(element.Amount, XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger))
+                            .Write(element.Price, XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal))
+                            .Write(element.DateCreated)
+                            .Write(element.Note)
+                            //.Write(element.TimeCreated.ToString("h:mm"))
+                            ;
+                    }
+                    xlsxWriterSheet.SetAutoFilter(1, 1, xlsxWriter.CurrentRowNumber - 1, 9);
+                }
+
+                if (memoryStreamExternal == null)
+                {
+                    File.WriteAllBytes("testLarge.xlsx", memoryStream.ToArray());
+                }
+            }
+        }
+
+        public static XLWorkbook ExportToExcelClosedXml<T>(List<T> data, ExcelIOMapperConfig xlMapperConfig = null) where T : class
+        {
+            xlMapperConfig = xlMapperConfig ?? new ExcelIOMapperConfig();
 
             var workbook = new XLWorkbook();
             var worksheet = workbook.AddWorksheet(xlMapperConfig.SheetName);
@@ -67,13 +130,13 @@ namespace ExcelIO.FastMapper
             var mappersInfo = new List<XLColumnMapperInfo>();
             foreach (var member in membersData)
             {
-                var attributeExt = member.GetAttributes<XLColumnExtAttribute>().FirstOrDefault();
+                var attributeExt = member.GetAttributes<ExcelColumnAttribute>().FirstOrDefault();
                 var attribute = member.GetAttributes<XLColumnAttribute>().FirstOrDefault();
 
-                if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
-                {
-                    attribute = dynamicSettings[member.Name];
-                }
+                //if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
+                //{
+                //    attribute = dynamicSettings[member.Name];
+                //}
 
                 var mapper = new XLColumnMapperInfo()
                 {
@@ -200,11 +263,38 @@ namespace ExcelIO.FastMapper
             return format;
         }
 
-        public static int GetWidthForHeader(XLColumnMapperInfo columnInfo, XLMapperConfig xlMapperConfig)
+        public static int GetWidthForHeader(XLColumnMapperInfo columnInfo, ExcelIOMapperConfig xlMapperConfig)
         {
             var coef = xlMapperConfig.DynamicColumnWidthCoefficient;
             int width = (int)(Math.Min(Math.Max(columnInfo.ColumnName.Length, 5), 15) * coef);
             return width;
         }
+    }
+
+    public class Item0
+    {
+        [ExcelColumn(Header = nameof(ItemId))]
+        public int ItemId { get; set; }
+
+        [ExcelColumn(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order goes first with attribute XLCol. (0 is default) and those without attribute come last
+        public bool IsActive { get; set; }
+
+        [ExcelColumn(Header = "Full Name", Order = 1, Width = 20)]
+        public string Name { get; set; }
+
+        public int Amount { get; set; }
+
+        [ExcelColumn(Order = 5, HeaderFormulaType = FormulaType.SUM)]
+        public decimal Price { get; set; }
+
+        [ExcelColumn(FormatId = 14, Order = 4)] // Custom Format with 3 decimal places
+        public decimal? Weight { get; set; }
+
+        [ExcelColumn(Header = "Created", Order = 3)]
+        public DateTime DateCreated { get; set; }
+
+        //public TimeOnly TimeCreated { get; set; }
+
+        public string Note { get; set; }
     }
 }

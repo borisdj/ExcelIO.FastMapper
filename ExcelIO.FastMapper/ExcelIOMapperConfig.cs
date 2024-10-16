@@ -4,8 +4,13 @@ using System.Collections.Generic;
 namespace ExcelIO.FastMapper
 {
 
-    public class XLMapperConfig
+    public class ExcelIOMapperConfig
     {
+        /// <summary>
+        /// When using FileStream and if not custom anme defuatl value is 'ClassName.xlsx'
+        /// </summary>
+        public string FileName { get; set; }
+
         /// <summary>
         /// Default value: 'Data'
         /// </summary>
@@ -84,6 +89,6 @@ namespace ExcelIO.FastMapper
         /// <summary>
         ///     Enables Attributes to be defined at runtime, for all usage types. Dict with PropertyName and independent Attribute with parameters values.
         /// </summary>
-        public Dictionary<string, XLColumnExtAttribute> DynamicSettings { get; set; }
+        public Dictionary<string, ExcelColumnAttribute> DynamicSettings { get; set; }
     }
 }
