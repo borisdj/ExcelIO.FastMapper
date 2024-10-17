@@ -1,6 +1,7 @@
 ﻿using ClosedXML;
 using ClosedXML.Attributes;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 using LargeXlsx;
 using SharpCompress.Compressors.Xz;
@@ -13,27 +14,34 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace ExcelIO.FastMapper
 {
+    public class MemberDataInfo
+    {
+        public string Header { get; set; }
+        public int Order { get; set; }
+        public MemberInfo MemberInfo { get; set; }
+        public ExcelIOColumnAttribute ExcelIOColum { get; set; }
+    }
     public static class ExcelHandler
     {
-        public static void ExportToExcelLarge<T>(List<T> data0, ExcelIOMapperConfig xlMapperConfig = null, MemoryStream memoryStreamExternal = null) where T : class
+        public static void ExportToExcelLarge<T>(List<T> data, ExcelIOMapperConfig xlMapperConfig = null, MemoryStream memoryStreamExternal = null) where T : class
         {
-            var data = new List<Item0>();
-            for (int i = 1; i < 100_000; i++)
+            var memberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+            var type = typeof(T);
+            var fieldsDict = type.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
+            var propertiesDict = type.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
+            var membersData = type.GetFields(memberBindingFlags).Cast<MemberInfo>().Concat(type.GetProperties(memberBindingFlags));
+            
+            var dynamicSettings = xlMapperConfig.DynamicSettings;
+
+            var membersDict = new Dictionary<string, MemberDataInfo>();
+            int i = 0;
+            foreach (var member in membersData)
             {
-                var item = new Item0
-                {
-                    ItemId = i,
-                    IsActive = true,
-                    Name = "Monitor" + i,
-                    Amount = 2 + i,
-                    Price = 1234.56m + i,
-                    Weight = 2.345m + i,
-                    DateCreated = DateTime.Now,
-                    Note = "info" + i,
-                    //TimeCreated = new TimeOnly(1, 1)
-                };
-                data.Add(item);
+                i++;
+                var excelIOColumnAttribute = (ExcelIOColumnAttribute)member.GetCustomAttributes(typeof(ExcelIOColumnAttribute), true).FirstOrDefault();
+                membersDict.Add(excelIOColumnAttribute.Header, excelIOColumnAttribute);
             }
+            var members = new Dictionary<string, MemberInfo>();
 
             MemoryStream memoryStream = null;
             using (memoryStreamExternal == null ? memoryStream = new MemoryStream() : null)
@@ -41,6 +49,8 @@ namespace ExcelIO.FastMapper
                 memoryStream = memoryStream ?? memoryStreamExternal;
                 using (var xlsxWriter = new XlsxWriter(memoryStream))
                 {
+                    var excelIOColumnAttribute = (ExcelIOColumnAttribute)property.GetCustomAttributes(typeof(ExcelIOColumnAttribute), true)[0];
+
                     var xlsxColumns = new List<XlsxColumn>();
                     for (int i = 1; i <= 9; i++)
                     {
@@ -49,7 +59,17 @@ namespace ExcelIO.FastMapper
                     xlsxColumns[3] = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger), width: 20);
                     xlsxColumns[4] = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal), width: 20);
 
-                    XlsxWriter xlsxWriterSheet = xlsxWriter.BeginWorksheet("Sheet 1", columns: xlsxColumns);
+                    //XlsxWriter xlsxWriterSheet = xlsxWriter.BeginWorksheet("Sheet 1", columns: xlsxColumns);
+
+                    XlsxWriter xlsxWriterSheet = xlsxWriter.BeginWorksheet(
+                        name: xlMapperConfig.SheetName,
+                        splitRow: xlMapperConfig.HeaderRowNumber,
+                        splitColumn: 0,
+                        columns: xlsxColumns,
+                        rightToLeft: false,
+                        showGridLines: true,
+                        showHeaders: true,
+                        state: XlsxWorksheetState.Visible);
 
                     foreach (var element in data)
                     {
@@ -130,7 +150,7 @@ namespace ExcelIO.FastMapper
             var mappersInfo = new List<XLColumnMapperInfo>();
             foreach (var member in membersData)
             {
-                var attributeExt = member.GetAttributes<ExcelColumnAttribute>().FirstOrDefault();
+                var attributeExt = member.GetAttributes<ExcelIOColumnAttribute>().FirstOrDefault();
                 var attribute = member.GetAttributes<XLColumnAttribute>().FirstOrDefault();
 
                 //if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
@@ -273,24 +293,24 @@ namespace ExcelIO.FastMapper
 
     public class Item0
     {
-        [ExcelColumn(Header = nameof(ItemId))]
+        [ExcelIOColumn(Header = nameof(ItemId))]
         public int ItemId { get; set; }
 
-        [ExcelColumn(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order goes first with attribute XLCol. (0 is default) and those without attribute come last
+        [ExcelIOColumn(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order goes first with attribute XLCol. (0 is default) and those without attribute come last
         public bool IsActive { get; set; }
 
-        [ExcelColumn(Header = "Full Name", Order = 1, Width = 20)]
+        [ExcelIOColumn(Header = "Full Name", Order = 1, Width = 20)]
         public string Name { get; set; }
 
         public int Amount { get; set; }
 
-        [ExcelColumn(Order = 5, HeaderFormulaType = FormulaType.SUM)]
+        [ExcelIOColumn(Order = 5, HeaderFormulaType = FormulaType.SUM)]
         public decimal Price { get; set; }
 
-        [ExcelColumn(FormatId = 14, Order = 4)] // Custom Format with 3 decimal places
+        [ExcelIOColumn(FormatId = 14, Order = 4)] // Custom Format with 3 decimal places
         public decimal? Weight { get; set; }
 
-        [ExcelColumn(Header = "Created", Order = 3)]
+        [ExcelIOColumn(Header = "Created", Order = 3)]
         public DateTime DateCreated { get; set; }
 
         //public TimeOnly TimeCreated { get; set; }

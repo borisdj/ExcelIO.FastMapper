@@ -116,24 +116,24 @@ namespace ExcelIO.FastMapper.Tests
 
     public class Item
     {
-        [ExcelColumn(Header = nameof(ItemId))]
+        [ExcelIOColumn(Header = nameof(ItemId))]
         public int ItemId { get; set; }
 
-        [ExcelColumn(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order goes first with attribute XLCol. (0 is default) and those without attribute come last
+        [ExcelIOColumn(Header = "Active", Format = XLFormatCodesFrequent.YesNo, Order = 2)] // Order goes first with attribute XLCol. (0 is default) and those without attribute come last
         public bool IsActive { get; set; }
 
-        [ExcelColumn(Header = "Full Name", Order = 1, Width = 20)]
+        [ExcelIOColumn(Header = "Full Name", Order = 1, Width = 20)]
         public string Name { get; set; }
 
         public int Amount { get; set; }
 
-        [ExcelColumn(Order = 5, HeaderFormulaType = FormulaType.SUM)]
+        [ExcelIOColumn(Order = 5, HeaderFormulaType = FormulaType.SUM)]
         public decimal Price { get; set; }
 
-        [ExcelColumn(FormatId = 14, Order = 4)] // Custom Format with 3 decimal places
+        [ExcelIOColumn(FormatId = 14, Order = 4)] // Custom Format with 3 decimal places
         public decimal? Weight { get; set; }
 
-        [ExcelColumn(Header = "Created", Order = 3)]
+        [ExcelIOColumn(Header = "Created", Order = 3)]
         public DateTime DateCreated { get; set; }
 
         public TimeOnly TimeCreated { get; set; }

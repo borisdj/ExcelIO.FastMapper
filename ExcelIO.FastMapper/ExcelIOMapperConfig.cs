@@ -89,6 +89,6 @@ namespace ExcelIO.FastMapper
         /// <summary>
         ///     Enables Attributes to be defined at runtime, for all usage types. Dict with PropertyName and independent Attribute with parameters values.
         /// </summary>
-        public Dictionary<string, ExcelColumnAttribute> DynamicSettings { get; set; }
+        public Dictionary<string, ExcelIOColumnAttribute> DynamicSettings { get; set; }
     }
 }
