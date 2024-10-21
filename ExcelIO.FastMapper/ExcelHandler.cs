@@ -15,44 +15,77 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace ExcelIO.FastMapper
 {
-    public class MemberDataInfo
+    /*public class MemberDataInfo
     {
         public string Header { get; set; }
         public int? Order { get; set; }
         public MemberInfo MemberInfo { get; set; }
         public ExcelIOColumnAttribute ExcelIOColum { get; set; }
-    }
+    }*/
     public static class ExcelHandler
     {
-        public static void ExportToExcelLarge<T>(List<T> data, ExcelIOMapperConfig xlMapperConfig = null, MemoryStream memoryStreamExternal = null) where T : class
+        public static void ExportToExcelLarge<T>(List<T> data, ExcelIOMapperConfig excelMapperConfig = null, MemoryStream memoryStreamExternal = null) where T : class
         {
+            excelMapperConfig = excelMapperConfig ?? new ExcelIOMapperConfig();
+
             var memberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
             var type = typeof(T);
             //var fieldsDict = type.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
             //var propertiesDict = type.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
             var membersData = type.GetFields(memberBindingFlags).Cast<MemberInfo>().Concat(type.GetProperties(memberBindingFlags));
             
-            var dynamicSettings = xlMapperConfig.DynamicSettings;
+            var dynamicSettings = excelMapperConfig.DynamicSettings;
 
-            var membersDict = new Dictionary<string, MemberDataInfo>();
+            var membersDict = new Dictionary<string, ExcelColumnMapperInfo>();
             int i = 0;
             foreach (var member in membersData)
             {
                 i++;
-                var excelIOColumnAttribute = (ExcelIOColumnAttribute)member.GetCustomAttributes(typeof(ExcelIOColumnAttribute), true).FirstOrDefault();
-                membersDict.Add(excelIOColumnAttribute.Header, 
-                    new MemberDataInfo
+                var attribute = member.GetAttributes<ExcelIOColumnAttribute>().FirstOrDefault();
+
+                if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
+                {
+                    attribute = dynamicSettings[member.Name];
+                }
+
+                bool propertyIsIncluded =
+                    (excelMapperConfig.ExportOnlyPropertiesWithAttribute == true && attribute != null && attribute.Ignore == false) ||
+                    (excelMapperConfig.ExportOnlyPropertiesWithAttribute == false && attribute != null && attribute.Ignore == false) ||
+                    (excelMapperConfig.ExportOnlyPropertiesWithAttribute == false && attribute == null);
+
+                if (propertyIsIncluded)
+                {
+                    //var excelMembersOrdered = membersDict.Values.Where(a => a.ExcelIOColum != null && a.ExcelIOColum.Ignore == false && a.ExcelIOColum.Order != 0).OrderBy(a => a.Order).ToList();
+                    //var excelMembersUnOrdered = membersDict.Values.Where(a => a.ExcelIOColum == null || (a.ExcelIOColum.Ignore == false && a.ExcelIOColum.Order == 0)).ToList();
+                    //excelMembersOrdered.AddRange(excelMembersUnOrdered);
+
+                    var mapper = new ExcelColumnMapperInfo()
                     {
-                        Header = excelIOColumnAttribute?.Header,
-                        Order = excelIOColumnAttribute?.Order,
-                        MemberInfo = member,
-                        ExcelIOColum = excelIOColumnAttribute
-                    });
+                        ColumnType = member.GetType(),
+                        Header = attribute?.Header ?? member.Name,
+                    };
+
+                    if (attribute != null && attribute.Ignore == false)
+                    {
+                        mapper.HasColumnAttribute = true;
+                        mapper.Order = attribute.Order;
+                        mapper.Format = attribute.Format;
+                        mapper.FormatId = attribute.FormatId;
+                        mapper.Width = attribute.Width;
+                        mapper.HeaderFormulaType = attribute.HeaderFormulaType;
+                        mapper.HasColumnAttribute = true;
+                    }
+
+                    if (membersDict.ContainsKey(mapper.Header))
+                    {
+                        throw new InvalidOperationException($"2 columns can not have same Header, value: '{mapper.Header}'");
+                    }
+
+                    membersDict.Add(mapper.Header, mapper);
+                }
             }
 
-            var excelMembers = membersDict.Values.Where(a => a.ExcelIOColum != null && a.ExcelIOColum.Ignore == false).OrderBy(a => a.Order).ToList();
-            var excelMembersWithNoAttributes = membersDict.Values.Where(a => a.ExcelIOColum == null).ToList();
-            excelMembers.AddRange(excelMembersWithNoAttributes);
+            var membersOrdered = membersDict.Values.OrderBy(a => a.Order).ToList();
 
             MemoryStream memoryStream = null;
             using (memoryStreamExternal == null ? memoryStream = new MemoryStream() : null)
@@ -60,40 +93,76 @@ namespace ExcelIO.FastMapper
                 memoryStream = memoryStream ?? memoryStreamExternal;
                 using (var xlsxWriter = new XlsxWriter(memoryStream))
                 {
-                    var excelIOColumnAttribute = (ExcelIOColumnAttribute)property.GetCustomAttributes(typeof(ExcelIOColumnAttribute), true)[0];
-
                     var xlsxColumns = new List<XlsxColumn>();
-                    for (int i = 1; i <= 9; i++)
-                    {
-                        xlsxColumns.Add(XlsxColumn.Unformatted());
-                    }
-                    xlsxColumns[3] = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger), width: 20);
-                    xlsxColumns[4] = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal), width: 20);
 
-                    //XlsxWriter xlsxWriterSheet = xlsxWriter.BeginWorksheet("Sheet 1", columns: xlsxColumns);
+                    foreach (var excelMember in membersOrdered)
+                    {
+                        var xlsxColumn = XlsxColumn.Unformatted();
+                        var columnType = excelMember.ColumnType;
+
+                        if (columnType == typeof(bool) || columnType == typeof(bool?))
+                        {
+                            // Fixed to True/False, for other(Yes/No) might have to override Values
+                            // format = @"""Yes"";;""No"""; // Requires Values to be: 0 and 1
+                            //   https://stackoverflow.com/questions/45835183/ms-excel-how-to-format-cell-as-yes-no-instead-of-true-false/45835438
+                        }
+                        else if (columnType == typeof(string))
+                        {
+                            xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.Text));                        // "@"
+                        }
+                        else if (columnType == typeof(byte) || columnType == typeof(byte?) ||
+                                 columnType == typeof(short) || columnType == typeof(short?) ||
+                                 columnType == typeof(int) || columnType == typeof(int?) ||
+                                 columnType == typeof(long) || columnType == typeof(long?))
+                        {
+                            xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger), width: 20);  // "#,##0"
+                        }
+                        else if (columnType == typeof(decimal) || columnType == typeof(decimal?) ||
+                                 columnType == typeof(float) || columnType == typeof(float?) ||
+                                 columnType == typeof(double) || columnType == typeof(double?))
+                        {
+                            xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal), width: 20);// "#,##0.00"
+                        }
+                        else if (columnType == typeof(DateTime) || columnType == typeof(DateTime?))
+                        {
+                            // "d/m/yyyy"
+                        }
+                        else if (columnType.Name == "DateOnly") // DateOnly type not in NetStandard2.0
+                        {
+                            // "d/m/yyyy"
+                        }
+                        else if (columnType.Name == "TimeOnly") // TimeOnly type not in NetStandard2.0
+                        {
+                            // "H:mm"
+                        }
+
+                        xlsxColumns.Add(xlsxColumn);
+                    }
 
                     XlsxWriter xlsxWriterSheet = xlsxWriter.BeginWorksheet(
-                        name: xlMapperConfig.SheetName,
-                        splitRow: xlMapperConfig.HeaderRowNumber,
+                        name: excelMapperConfig.SheetName,
+                        splitRow: excelMapperConfig.HeaderRowNumber,
                         splitColumn: 0,
                         columns: xlsxColumns,
                         rightToLeft: false,
                         showGridLines: true,
                         showHeaders: true,
-                        state: XlsxWorksheetState.Visible);
+                        state: XlsxWorksheetState.Visible
+                    );
+
+                    var row = xlsxWriterSheet.BeginRow();
+                    foreach (var excelMember in membersOrdered)
+                    {
+                        row.Write(excelMember.Header);
+                    };
 
                     foreach (var element in data)
                     {
-                        var row = xlsxWriterSheet.BeginRow()
-                            .Write(element.ItemId)
-                            .Write(element.IsActive)
-                            .Write(element.Name)
-                            .Write(element.Amount, XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger))
-                            .Write(element.Price, XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal))
-                            .Write(element.DateCreated)
-                            .Write(element.Note)
-                            //.Write(element.TimeCreated.ToString("h:mm"))
-                            ;
+                        row = xlsxWriterSheet.BeginRow();
+                        foreach (var excelMember in membersOrdered)
+                        {
+                            row.Write(excelMember.Header); // XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger
+                        };
                     }
                     xlsxWriterSheet.SetAutoFilter(1, 1, xlsxWriter.CurrentRowNumber - 1, 9);
                 }

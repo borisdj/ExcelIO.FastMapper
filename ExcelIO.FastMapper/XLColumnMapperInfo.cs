@@ -22,4 +22,21 @@ namespace ExcelIO.FastMapper
 
         public Dictionary<string, ExcelIOColumnAttribute> DynamicSettings { get; set; }
     }
+
+    public class ExcelColumnMapperInfo
+    {
+        public bool HasColumnAttribute { get; set; }
+        public Type ColumnType { get; set; }
+        public string Header { get; set; }
+        public int Order { get; set; }
+        public string Format { get; set; }
+        public int FormatId { get; set; }
+        public int Width { get; set; }
+
+        public FormulaType HeaderFormulaType { get; set; }
+
+        public int Position { get; set; }
+
+        public Dictionary<string, ExcelIOColumnAttribute> DynamicSettings { get; set; }
+    }
 }

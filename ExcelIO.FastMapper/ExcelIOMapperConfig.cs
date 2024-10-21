@@ -87,6 +87,12 @@ namespace ExcelIO.FastMapper
         public double? DataFontSize { get; set; }
 
         /// <summary>
+        /// Default is False when all props are mapped to columns except those explicitly configued with 'Ignore' param.
+        /// Wwhen set to True all with no explicit attribute are also ignored
+        /// </summary>
+        public bool ExportOnlyPropertiesWithAttribute { get; set; }
+
+        /// <summary>
         ///     Enables Attributes to be defined at runtime, for all usage types. Dict with PropertyName and independent Attribute with parameters values.
         /// </summary>
         public Dictionary<string, ExcelIOColumnAttribute> DynamicSettings { get; set; }
