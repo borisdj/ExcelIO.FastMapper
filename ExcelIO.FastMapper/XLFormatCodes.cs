@@ -8,26 +8,26 @@
 
     public static class XLFormatCodesFrequent
     {
-        public static XLFormat General => XLFormatCodes.C0;                         // "General"
-        public static XLFormat Text => XLFormatCodes.C49;                           // "@"
+        public static XLFormat General => XLFormatCodes.C0;             // "General"
+        public static XLFormat Text => XLFormatCodes.C49;               // "@"
 
-        public static XLFormat Integer => XLFormatCodes.C1;                         // "0"
-        public static XLFormat ThousandInteger => XLFormatCodes.C3;    // "#,##0"
-        public static XLFormat Decimals2 => XLFormatCodes.C2;                       // "0.00"
-        public static XLFormat ThousandDecimals2 => XLFormatCodes.C4;  // "#,##0.00"
-        public static XLFormat IntegerPercentage => XLFormatCodes.C9;               // "0%"
-        public static XLFormat Decimals2Percentage => XLFormatCodes.C10;            // "0.00%"
+        public static XLFormat Integer => XLFormatCodes.C1;             // "0"
+        public static XLFormat ThousandInteger => XLFormatCodes.C3;     // "#,##0"
+        public static XLFormat Decimals2 => XLFormatCodes.C2;           // "0.00"
+        public static XLFormat ThousandDecimals2 => XLFormatCodes.C4;   // "#,##0.00"
+        public static XLFormat IntegerPercentage => XLFormatCodes.C9;   // "0%"
+        public static XLFormat Decimals2Percentage => XLFormatCodes.C10;// "0.00%"
 
-        public static XLFormat ShortTime => XLFormatCodes.C20;                      // "H:mm"
-        public static XLFormat LongTime => XLFormatCodes.C21;                       // "H:mm:ss"
-        public static XLFormat ShortDate => XLFormatCodes.C14;                      // "d/m/yyyy"
-        public static XLFormat ShortDateTime => XLFormatCodes.C22;                  // "m/d/yyyy H:mm"
+        public static XLFormat ShortTime => XLFormatCodes.C20;          // "H:mm"
+        public static XLFormat LongTime => XLFormatCodes.C21;           // "H:mm:ss"
+        public static XLFormat ShortDate => XLFormatCodes.C14;          // "d/m/yyyy"
+        public static XLFormat ShortDateTime => XLFormatCodes.C22;      // "m/d/yyyy H:mm"
 
         public const string LongDate = "dd/mm/yyyy";
 
-        public const string MonthNameDate = "mmmm dd, yyyy";     // 2020/1/1 => Jan 01, 2020
+        public const string MonthNameDate = "mmmm dd, yyyy";            // 2020/1/1 => Jan 01, 2020
 
-        public const string MonthFullNameDate = "mmmm dd, yyyy"; // 2020/1/1 => January 01, 2020
+        public const string MonthFullNameDate = "mmmm dd, yyyy";        // 2020/1/1 => January 01, 2020
 
         public const string LongDateTime = "dd/mm/yyyy H:mm:ss";
 

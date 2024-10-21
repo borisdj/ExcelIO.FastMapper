@@ -2,6 +2,7 @@
 using ClosedXML.Attributes;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using LargeXlsx;
 using SharpCompress.Compressors.Xz;
@@ -17,7 +18,7 @@ namespace ExcelIO.FastMapper
     public class MemberDataInfo
     {
         public string Header { get; set; }
-        public int Order { get; set; }
+        public int? Order { get; set; }
         public MemberInfo MemberInfo { get; set; }
         public ExcelIOColumnAttribute ExcelIOColum { get; set; }
     }
@@ -27,8 +28,8 @@ namespace ExcelIO.FastMapper
         {
             var memberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
             var type = typeof(T);
-            var fieldsDict = type.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
-            var propertiesDict = type.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
+            //var fieldsDict = type.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
+            //var propertiesDict = type.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
             var membersData = type.GetFields(memberBindingFlags).Cast<MemberInfo>().Concat(type.GetProperties(memberBindingFlags));
             
             var dynamicSettings = xlMapperConfig.DynamicSettings;
@@ -39,9 +40,19 @@ namespace ExcelIO.FastMapper
             {
                 i++;
                 var excelIOColumnAttribute = (ExcelIOColumnAttribute)member.GetCustomAttributes(typeof(ExcelIOColumnAttribute), true).FirstOrDefault();
-                membersDict.Add(excelIOColumnAttribute.Header, excelIOColumnAttribute);
+                membersDict.Add(excelIOColumnAttribute.Header, 
+                    new MemberDataInfo
+                    {
+                        Header = excelIOColumnAttribute?.Header,
+                        Order = excelIOColumnAttribute?.Order,
+                        MemberInfo = member,
+                        ExcelIOColum = excelIOColumnAttribute
+                    });
             }
-            var members = new Dictionary<string, MemberInfo>();
+
+            var excelMembers = membersDict.Values.Where(a => a.ExcelIOColum != null && a.ExcelIOColum.Ignore == false).OrderBy(a => a.Order).ToList();
+            var excelMembersWithNoAttributes = membersDict.Values.Where(a => a.ExcelIOColum == null).ToList();
+            excelMembers.AddRange(excelMembersWithNoAttributes);
 
             MemoryStream memoryStream = null;
             using (memoryStreamExternal == null ? memoryStream = new MemoryStream() : null)

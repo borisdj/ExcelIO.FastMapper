@@ -34,11 +34,11 @@ namespace ExcelIO.FastMapper.Tests
 
             if(type == "LargeXlsx")
             {
-                using var stream = new MemoryStream();
-                ExcelHandler.ExportToExcelLarge<Item>(data, null, stream);
+                /*using var stream = new MemoryStream();
+                ExcelHandler.ExportToExcelLArgeXml<Item>(data, null, stream);
                 File.WriteAllBytes("testLarge.xlsx", stream.ToArray());
 
-                /*using (var stream = new MemoryStream())
+                using (var stream = new MemoryStream())
                 {
                     using (var xlsxWriter = new XlsxWriter(stream))
                     {
