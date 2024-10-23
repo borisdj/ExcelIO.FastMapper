@@ -115,13 +115,13 @@ namespace ExcelIO.FastMapper
                                  columnType == typeof(int)  || columnType == typeof(int?)  ||
                                  columnType == typeof(long) || columnType == typeof(long?))
                         {
-                            xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger), width: 20);  // "#,##0"
+                            xlsxColumn = XlsxColumn.Formatted(width: 20, style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger));  // "#,##0"
                         }
                         else if (columnType == typeof(decimal)|| columnType == typeof(decimal?)||
                                  columnType == typeof(float)  || columnType == typeof(float?)  ||
                                  columnType == typeof(double) || columnType == typeof(double?))
                         {
-                            xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal), width: 20);// "#,##0.00"
+                            xlsxColumn = XlsxColumn.Formatted(width: 20, style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal));// "#,##0.00"
                         }
                         else if (columnType == typeof(DateTime) || columnType == typeof(DateTime?))
                         {
