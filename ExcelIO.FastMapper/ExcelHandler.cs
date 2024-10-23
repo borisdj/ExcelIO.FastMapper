@@ -108,17 +108,17 @@ namespace ExcelIO.FastMapper
                         }
                         else if (columnType == typeof(string))
                         {
-                            xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.Text));                        // "@"
+                            xlsxColumn = XlsxColumn.Formatted(width: 30, style: XlsxStyle.Default.With(XlsxNumberFormat.Text));                        // "@"
                         }
                         else if (columnType == typeof(byte) || columnType == typeof(byte?) ||
-                                 columnType == typeof(short) || columnType == typeof(short?) ||
-                                 columnType == typeof(int) || columnType == typeof(int?) ||
+                                 columnType == typeof(short)|| columnType == typeof(short?)||
+                                 columnType == typeof(int)  || columnType == typeof(int?)  ||
                                  columnType == typeof(long) || columnType == typeof(long?))
                         {
                             xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger), width: 20);  // "#,##0"
                         }
-                        else if (columnType == typeof(decimal) || columnType == typeof(decimal?) ||
-                                 columnType == typeof(float) || columnType == typeof(float?) ||
+                        else if (columnType == typeof(decimal)|| columnType == typeof(decimal?)||
+                                 columnType == typeof(float)  || columnType == typeof(float?)  ||
                                  columnType == typeof(double) || columnType == typeof(double?))
                         {
                             xlsxColumn = XlsxColumn.Formatted(style: XlsxStyle.Default.With(XlsxNumberFormat.ThousandTwoDecimal), width: 20);// "#,##0.00"

@@ -38,5 +38,7 @@ namespace ExcelIO.FastMapper
         public int Position { get; set; }
 
         public Dictionary<string, ExcelIOColumnAttribute> DynamicSettings { get; set; }
+
+        public FastProperty FastProperty { get; set; }
     }
 }
