@@ -3,6 +3,11 @@
 In addition it has several useful confing options and Export also supports columns formatting.  
 Both Reading and Writing are **very fast** while the package itself is lightweight with minimum depencencies.
 
+Logo  
+<img src="ExcelIO.png" height=60>
+
+[![NuGet](https://img.shields.io/npm/l/express.svg)](https://github.com/borisdj/ExcelIO.FastMapper/blob/master/LICENSE)  
+
 Also take a look into others packages:</br>
 -Open source (MIT or cFOSS) authored [.Net libraries](https://infopedia.io/dot-net-libraries/) (@**Infopedia.io** personal blog post)
 | №  | .Net library             | Description                                              |
