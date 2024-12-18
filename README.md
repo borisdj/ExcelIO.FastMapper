@@ -54,8 +54,8 @@ PROPERTY : DEFAULTvalue
 
 **ExcelIO Column Attribute** : defaultValue
 ```C#
-bool Ignore	: false ................ // Filed ommited form Excel
-string Header : 0	.................. // Header Name
+bool Ignore : false ................ // Field omitted from Excel
+string Header : 0 .................. // Header Name
 string Format : null ............... // Column format
 int Order : new List<string>() ..... // Position in column orders
 int Width .......................... // Column width
@@ -65,9 +65,10 @@ int Width .......................... // Column width
 Under the hood library uses most efficient packages in their domain:  
 -[Sylvan.Data.Excel](https://github.com/MarkPflug/Sylvan.Data.Excel) for Reading  
 -[LargeXlsx](https://github.com/salvois/LargeXlsx) for Writing as it has formatting option and is still pretty quick.  
-Library has only those 2 dependecies that themselves are fully self-containd, and as such are quite thin.  
-While doing research for optimal tool, other criteria were to be Open Source, with code on Github and having Nuget.  
-Then to be actively maintained, have certain period of development with proven record of usage (Git commits, starts and Nuget downloads).  
+Library has only those 2 dependecies that themselves are fully self-containd, and as such are quite thin.
+(LargeXsql has transitive dependency on *SharpCompress* which is somewhat bigger ~1 MB).  
 
+While doing research for optimal tool, criteria were to be Open Source, with code on Github and having Nuget.  
+Also to be actively maintained, have certain period of development with proven record of usage (Git commits, starts and Nuget downloads).  
 Comparison of several packages for the fastest one:  
 [ExceNetLibs.Compare](https://docs.google.com/spreadsheets/d/1rF4QEoDmTLB4cbbVL575276vhnfhyfX-KxGk-rcJAiA/edit?gid=0#gid=0)
