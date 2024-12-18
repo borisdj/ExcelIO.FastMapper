@@ -55,7 +55,7 @@ PROPERTY : DEFAULTvalue
 **ExcelIO Column Attribute** : defaultValue
 ```C#
 bool Ignore : false ................ // Filed ommited form Excel
-string Header : 0	.................. // Header Name
+string Header : 0 .................. // Header Name
 string Format : null ............... // Column format
 int Order : new List<string>() ..... // Position in column orders
 int Width .......................... // Column width
