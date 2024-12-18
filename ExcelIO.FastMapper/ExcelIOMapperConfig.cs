@@ -1,5 +1,4 @@
-﻿using ClosedXML.Excel;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ExcelIO.FastMapper
 {
@@ -64,12 +63,12 @@ namespace ExcelIO.FastMapper
         /// <summary>
         /// Table Theme type
         /// </summary>
-        public XLTableTheme XLTableTheme { get; set; }
+        //public XLTableTheme XLTableTheme { get; set; }
 
         /// <summary>
         /// Table Style
         /// </summary>
-        public IXLStyle XLStyle { get; set; }
+        //public IXLStyle XLStyle { get; set; }
 
         /// <summary>
         /// Default value: 'Calibri'

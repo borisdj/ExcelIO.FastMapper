@@ -1,6 +1,4 @@
-﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office2013.Excel;
-using LargeXlsx;
+﻿using LargeXlsx;
 using System.IO;
 using System.IO.Pipes;
 
@@ -8,11 +6,8 @@ namespace ExcelIO.FastMapper.Tests
 {
     public class MapperTest
     {
-        [Theory]
-        [InlineData("LargeXlsx")]
-        [InlineData("ClosedXML", false)]
-        [InlineData("ClosedXML", true)]
-        public async void ExportTest(string type, bool hasCustomConfig = false)
+        [Fact]
+        public async void ExportTest()
         {
             var data = new List<Item>();
             for (int i = 1; i < 50_000; i++)
@@ -32,7 +27,7 @@ namespace ExcelIO.FastMapper.Tests
                 data.Add(item);
             }
 
-            if(type == "LargeXlsx")
+            //if(type == "LargeXlsx")
             {
                 /*using var stream = new MemoryStream();
                 ExcelHandler.ExportToExcelLArgeXml<Item>(data, null, stream);
@@ -86,30 +81,6 @@ namespace ExcelIO.FastMapper.Tests
                 //var streamF = new FileStream("testLarge.xlsx", FileMode.Create, FileAccess.Write);
                 //   streamF.CopyToAsync(toWrite);
                 //}
-            }
-
-            else if (type == "ClosedXML")
-            {
-                var xlsxExtension = ".xlsx";
-
-                if (!hasCustomConfig)
-                {
-                    var workbook = ExcelHandler.ExportToExcelClosedXml(data);
-                    workbook.SaveAs("testClosed" + xlsxExtension);
-                }
-                else
-                {
-                    var mapperConfig = new ExcelIOMapperConfig
-                    {
-                        HeaderRowNumber = 2,
-                        FreezeColumnNumber = 2,
-                        AutoFilterVisible = false,
-                        XLTableTheme = XLTableTheme.TableStyleMedium13 // samples: https://c-rex.net/samples/ooxml/e1/Part4/OOXML_P4_DOCX_tableStyle_topic_ID0EFIO6.html
-                    };
-                    var data20 = data.Take(20).ToList();
-                    var workbook2 = ExcelHandler.ExportToExcelClosedXml(data20, mapperConfig);
-                    workbook2.SaveAs("testClosed2" + xlsxExtension);
-                }
             }
         }
     }

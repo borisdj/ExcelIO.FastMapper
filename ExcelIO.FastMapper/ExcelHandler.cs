@@ -1,10 +1,4 @@
-﻿using ClosedXML;
-using ClosedXML.Attributes;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Spreadsheet;
-using LargeXlsx;
+﻿using LargeXlsx;
 using SharpCompress.Compressors.Xz;
 using System;
 using System.Collections.Generic;
@@ -12,18 +6,93 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
+using System.Data;
+using Sylvan.Data.Excel;
 
 namespace ExcelIO.FastMapper
 {
-    /*public class MemberDataInfo
-    {
-        public string Header { get; set; }
-        public int? Order { get; set; }
-        public MemberInfo MemberInfo { get; set; }
-        public ExcelIOColumnAttribute ExcelIOColum { get; set; }
-    }*/
     public static class ExcelHandler
     {
+        public static void ExportToExcel<T>(List<T> data, ExcelIOMapperConfig excelMapperConfig = null, MemoryStream memoryStreamExternal = null) where T : class
+        {
+            excelMapperConfig = excelMapperConfig ?? new ExcelIOMapperConfig();
+
+            var memberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+            var type = typeof(T);
+            //var fieldsDict = type.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
+            //var propertiesDict = type.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
+            var membersData = type.GetFields(memberBindingFlags).Cast<MemberInfo>().Concat(type.GetProperties(memberBindingFlags));
+
+            var dynamicSettings = excelMapperConfig.DynamicSettings;
+
+            var membersDict = new Dictionary<string, ExcelColumnMapperInfo>();
+            int i = 0;
+            foreach (var member in membersData)
+            {
+                i++;
+                var attribute = member.GetCustomAttributes<ExcelIOColumnAttribute>().FirstOrDefault();
+
+                if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
+                {
+                    attribute = dynamicSettings[member.Name];
+                }
+
+                bool propertyIsIncluded =
+                    (excelMapperConfig.ExportOnlyPropertiesWithAttribute == true && attribute != null && attribute.Ignore == false) ||
+                    (excelMapperConfig.ExportOnlyPropertiesWithAttribute == false && attribute != null && attribute.Ignore == false) ||
+                    (excelMapperConfig.ExportOnlyPropertiesWithAttribute == false && attribute == null);
+
+                if (propertyIsIncluded)
+                {
+                    var mapper = new ExcelColumnMapperInfo()
+                    {
+                        ColumnType = member.GetType(),
+                        Header = attribute?.Header ?? member.Name,
+                    };
+
+                    if (attribute != null && attribute.Ignore == false)
+                    {
+                        mapper.HasColumnAttribute = true;
+                        mapper.Order = attribute.Order;
+                        mapper.Format = attribute.Format;
+                        mapper.FormatId = attribute.FormatId;
+                        mapper.Width = attribute.Width;
+                        mapper.HeaderFormulaType = attribute.HeaderFormulaType;
+                        mapper.HasColumnAttribute = true;
+                    }
+
+                    if (membersDict.ContainsKey(mapper.Header))
+                    {
+                        throw new InvalidOperationException($"2 columns can not have same Header, value: '{mapper.Header}'");
+                    }
+
+                    membersDict.Add(mapper.Header, mapper);
+                }
+            }
+
+            var table = new DataTable();
+            var membersOrdered = membersDict.Values.OrderBy(a => a.Order).ToList();
+
+            foreach (var excelMember in membersOrdered)
+            {
+                var columnType = excelMember.ColumnType;
+                var columnName = excelMember.Header;
+
+                table.Columns.Add(columnName, columnType);
+            }
+            foreach (var element in data)
+            {
+                table.Rows.Add(membersOrdered.ToArray());
+            }
+
+            DataTableReader reader = table.CreateDataReader();
+            using (var excelDataWriter = ExcelDataWriter.Create(excelMapperConfig.FileName))
+            {
+                var result = excelDataWriter.Write(reader, "Sheet1");
+                reader.Close();
+            }
+        }
+
         public static void ExportToExcelLarge<T>(List<T> data, ExcelIOMapperConfig excelMapperConfig = null, MemoryStream memoryStreamExternal = null) where T : class
         {
             excelMapperConfig = excelMapperConfig ?? new ExcelIOMapperConfig();
@@ -41,7 +110,7 @@ namespace ExcelIO.FastMapper
             foreach (var member in membersData)
             {
                 i++;
-                var attribute = member.GetAttributes<ExcelIOColumnAttribute>().FirstOrDefault();
+                var attribute = member.GetCustomAttributes<ExcelIOColumnAttribute>().FirstOrDefault();
 
                 if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
                 {
@@ -173,153 +242,7 @@ namespace ExcelIO.FastMapper
                 }
             }
         }
-
-        public static XLWorkbook ExportToExcelClosedXml<T>(List<T> data, ExcelIOMapperConfig xlMapperConfig = null) where T : class
-        {
-            xlMapperConfig = xlMapperConfig ?? new ExcelIOMapperConfig();
-
-            var workbook = new XLWorkbook();
-            var worksheet = workbook.AddWorksheet(xlMapperConfig.SheetName);
-            var table = worksheet.Cell(xlMapperConfig.HeaderRowNumber, 1).InsertTable(data);
-
-            var memberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
-            var itemType = typeof(T);
-            var itemsDict = itemType.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
-            var propertiesDict = itemType.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
-            var membersData = itemType.GetFields(memberBindingFlags).Cast<MemberInfo>().Concat(itemType.GetProperties(memberBindingFlags));
-            var dynamicSettings = xlMapperConfig.DynamicSettings;
-
-            var headerRow = table.DataRange.FirstRow(); //or table.Row(1);
-
-            // THEME
-            if (xlMapperConfig.XLTableTheme != null)
-            {
-                table.Theme = xlMapperConfig.XLTableTheme;
-            }
-
-            // STYLE
-            if (xlMapperConfig.XLTableTheme != null)
-            {
-                table.Style = xlMapperConfig.XLStyle;
-            }
-
-            // FREEZE
-            if (xlMapperConfig.FreezeHeader)
-                worksheet.SheetView.FreezeRows(xlMapperConfig.HeaderRowNumber);
-            if (xlMapperConfig.FreezeColumnNumber > 0)
-                worksheet.SheetView.FreezeColumns(xlMapperConfig.FreezeColumnNumber);
-
-            // FILTER
-            if (!xlMapperConfig.AutoFilterVisible)
-                table.SetShowAutoFilter(xlMapperConfig.AutoFilterVisible);
-
-            // FONTS
-            var dataFont = table.Style.Font;
-            if (xlMapperConfig.DataFont != null)
-                dataFont.FontName = xlMapperConfig.DataFont;
-            if (xlMapperConfig.DataFontSize != null)
-                dataFont.FontSize = (double)xlMapperConfig.DataFontSize;
-            
-            var headerFont = table.HeadersRow().Style.Font;
-            if (xlMapperConfig.HeaderFont != null)
-                headerFont.FontName = xlMapperConfig.HeaderFont;
-            if (xlMapperConfig.HeaderFontSize != null)
-                headerFont.FontSize = (double)xlMapperConfig.HeaderFontSize;
-
-            // GET MAPPER INFO
-            var mappersInfo = new List<XLColumnMapperInfo>();
-            foreach (var member in membersData)
-            {
-                var attributeExt = member.GetAttributes<ExcelIOColumnAttribute>().FirstOrDefault();
-                var attribute = member.GetAttributes<XLColumnAttribute>().FirstOrDefault();
-
-                //if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
-                //{
-                //    attribute = dynamicSettings[member.Name];
-                //}
-
-                var mapper = new XLColumnMapperInfo()
-                {
-                    ColumnType = member.MemberType == MemberTypes.Property ? propertiesDict[member.Name]
-                                                                           : itemsDict[member.Name],
-                    ColumnName = attributeExt?.Header ?? attribute?.Header ?? member.Name,
-                };
-
-                if (attributeExt != null && !attributeExt.Ignore)
-                {
-                    mapper.Header = attributeExt.Header;
-                    mapper.Order = attributeExt.Order;
-                    mapper.Format = attributeExt.Format;
-                    mapper.FormatId = attributeExt.FormatId;
-                    mapper.Width = attributeExt.Width;
-                    mapper.HeaderFormulaType = attributeExt.HeaderFormulaType;
-                    mapper.HasColumnAttribute = true;
-                }
-                else if (attribute != null && !attribute.Ignore)
-                {
-                    mapper.Header = attribute.Header;
-                    mapper.Order = attribute.Order;
-                    mapper.Width = attributeExt.Width;
-                    mapper.HasColumnAttribute = true;
-                }
-                else
-                {
-                    mapper.HasColumnAttribute = false;
-                }
-                mappersInfo.Add(mapper);
-            }
-            var columnsInfoWithoutAttribute = mappersInfo.Where(a => !a.HasColumnAttribute).ToList();
-            mappersInfo = mappersInfo.Where(a => a.HasColumnAttribute).OrderBy(a => a.Order).ToList();
-            mappersInfo.AddRange(columnsInfoWithoutAttribute); // in ClosedXML members without annotation attributes are ordered after those that do have it
-
-            // SET FORMAT AND WIDTH table.
-            int i = 0;
-            foreach (var columnMapperInfo in mappersInfo)
-            {
-                columnMapperInfo.Position = ++i;
-                var column = headerRow.Field(columnMapperInfo.ColumnName).WorksheetColumn(); // if used table.Column(colNumber); then formated only till last row and not entire column
-
-                if (columnMapperInfo.FormatId >= 0)
-                {
-                    column.Style.NumberFormat.NumberFormatId = columnMapperInfo.FormatId;
-                }
-
-                if (xlMapperConfig.UseDefaultColumnFormat || !string.IsNullOrEmpty(columnMapperInfo.Format)) // default or custom Format
-                {
-                    var format = !string.IsNullOrEmpty(columnMapperInfo.Format) ? columnMapperInfo.Format
-                                                                                : GetDefaultFormatForType(columnMapperInfo.ColumnType);
-                    column.Style.NumberFormat.Format = format;
-                }
-
-                if(xlMapperConfig.UseDynamicColumnWidth)
-                {
-                    var width = columnMapperInfo.Width > 0 ? columnMapperInfo.Width
-                                                           : GetWidthForHeader(columnMapperInfo, xlMapperConfig);
-                    column.Width = width;
-                }
-                
-                if (xlMapperConfig.HeaderRowNumber > 1 && columnMapperInfo.HeaderFormulaType != FormulaType.None)
-                {
-                    int firstDataRow = xlMapperConfig.HeaderRowNumber + 1;
-                    int lastDataRow = firstDataRow + data.Count();
-                    string columnLetter = column.ColumnLetter();
-                    string columnName = columnMapperInfo.ColumnName;
-                    string headerFormulaType = columnMapperInfo.HeaderFormulaType.ToString();
-
-                    var formulaTable = $"={headerFormulaType}({table.Name}[{columnName}])";
-                    //      example: = "=SUM(Table1[Price])"
-                    var formulaRange =$"={headerFormulaType}({columnLetter}{firstDataRow}:{columnLetter}{lastDataRow})"; // not used currently
-                    //      example: = "=SUM(G2:G56)"
-
-                    var cell = column.Cell(xlMapperConfig.HeaderRowNumber - 1);
-                    cell.SetFormulaA1(formulaTable);
-                    cell.Style.Fill.BackgroundColor = XLColor.LightGray; // https://github.com/closedxml/closedxml/wiki/ClosedXML-Predefined-Colors
-                }
-            }
-
-            return workbook;
-        }
-
+       
         public static string GetDefaultFormatForType(Type columnType)
         {
             var format = string.Empty;

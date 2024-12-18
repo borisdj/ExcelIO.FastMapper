@@ -1,5 +1,4 @@
-﻿using ClosedXML;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 
@@ -9,7 +8,7 @@ namespace ExcelIO.FastMapper
     public class ExcelIOColumnAttribute : Attribute
     {
 
-        public string Header { get; set; }
+        public string Header { get; set; } // string?
 
         public bool Ignore { get; set; }
 
@@ -57,13 +56,13 @@ namespace ExcelIO.FastMapper
 
         internal static string GetFormat(MemberInfo mi)
         {
-            var attribute = mi.GetAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
+            var attribute = mi.GetCustomAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
             return attribute?.Format;
         }
 
         internal static int? GetFormatId(MemberInfo mi)
         {
-            var attribute = mi.GetAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
+            var attribute = mi.GetCustomAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
             return attribute?.FormatId;
         }
 
@@ -71,7 +70,7 @@ namespace ExcelIO.FastMapper
 
         internal static int? GetWidth(MemberInfo mi)
         {
-            var attribute = mi.GetAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
+            var attribute = mi.GetCustomAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
             return attribute?.Width;
         }
 
@@ -79,7 +78,7 @@ namespace ExcelIO.FastMapper
 
         internal static FormulaType? GetFormula(MemberInfo mi)
         {
-            var attribute = mi.GetAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
+            var attribute = mi.GetCustomAttributes<ExcelIOColumnAttribute>()?.FirstOrDefault();
             return attribute?.HeaderFormulaType;
         }
     }
