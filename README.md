@@ -31,8 +31,38 @@ Please read [CONTRIBUTING](CONTRIBUTING.md) for details on code of conduct, and 
 When opening issues do write detailed explanation of the problem or feature with reproducible example.  
 Want to **Contact** for Development & Consulting: [www.codis.tech](http://www.codis.tech) (*Quality Delivery*) 
 
-Attributes:  
-`[ExcelColumn]`
+## CONFIG
+**ExcelIO Mapper Config**:  
+```C#
+PROPERTY : DEFAULTvalue
+----------------------------------------------
+ 1 FileName, 
+ 2 SheetName: "Data",
+ 3 UseDefaultColumnFormat: true,
+ 4 UseDefaultColumnFormat: bool,
+ 5 AutoFilterVisible: true,
+ 6 UseDynamicColumnWidth: true,
+ 7 WrapHeader: false,
+ 8 DynamicColumnWidthCoefficient: false,
+ 9 FreezeHeader: true,
+10 FreezeColumnNumber: true,
+11 HeaderFont: null,
+12 DataFont: null,
+13 ExportOnlyPropertiesWithAttribute: null,
+-----------------------------------------------
+METHOD: SetSynchronizeFilter<T>
+        SetSynchronizeSoftDelete<T>
+```
+
+**ExcelIO Column Attribute** : defaultValue
+```C#
+bool Ignore	: false ................ // Filed ommited form Excel
+string Header : 0	.................. // Header Name
+string Format : null ............... // Column format
+int Order : new List<string>() ..... // Position in column orders
+int Width .......................... // Column width
+```
+*-Special feature is '**DYNAMIC Settings**' with which Attributes values can be defined at runtime, for all usage types.  
 
 Under the hood library uses most efficient packages in their domain:  
 -[Sylvan.Data.Excel](https://github.com/MarkPflug/Sylvan.Data.Excel) for Reading  
