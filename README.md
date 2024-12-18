@@ -39,19 +39,17 @@ PROPERTY : DEFAULTvalue
  1 FileName, 
  2 SheetName: "Data",
  3 UseDefaultColumnFormat: true,
- 4 UseDefaultColumnFormat: bool,
- 5 AutoFilterVisible: true,
- 6 UseDynamicColumnWidth: true,
- 7 WrapHeader: false,
- 8 DynamicColumnWidthCoefficient: false,
- 9 FreezeHeader: true,
-10 FreezeColumnNumber: true,
-11 HeaderFont: null,
-12 DataFont: null,
-13 ExportOnlyPropertiesWithAttribute: null,
+ 4 AutoFilterVisible: true,
+ 5 UseDynamicColumnWidth: true,
+ 6 WrapHeader: false,
+ 7 DynamicColumnWidthCoefficient: false,
+ 8 FreezeHeader: true,
+ 9 FreezeColumnNumber: true,
+10 HeaderFont: null,
+11 DataFont: null,
+12 ExportOnlyPropertiesWithAttribute: null,
+13 Dictionary<string, ExcelIOColumnAttribute> DynamicSettings
 -----------------------------------------------
-METHOD: SetSynchronizeFilter<T>
-        SetSynchronizeSoftDelete<T>
 ```
 
 **ExcelIO Column Attribute** : defaultValue
@@ -70,3 +68,6 @@ Under the hood library uses most efficient packages in their domain:
 Library has only those 2 dependecies that themselves are fully self-containd, and as such are quite thin.  
 While doing research for optimal tool, other criteria were to be Open Source, with code on Github and having Nuget.  
 Then to be actively maintained, have certain period of development with proven record of usage (Git commits, starts and Nuget downloads).  
+
+Comparison of several packages for the fastest one:  
+[ExceNetLibs.Compare(https://docs.google.com/spreadsheets/d/1rF4QEoDmTLB4cbbVL575276vhnfhyfX-KxGk-rcJAiA/edit?gid=0#gid=0)
