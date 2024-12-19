@@ -31,7 +31,7 @@ Please read [CONTRIBUTING](CONTRIBUTING.md) for details on code of conduct, and 
 When opening issues do write detailed explanation of the problem or feature with reproducible example.  
 Want to **Contact** for Development & Consulting: [www.codis.tech](http://www.codis.tech) (*Quality Delivery*) 
 
-## CONFIG
+## Configuration
 **Excel-IO Mapper config**:  
 ```C#
 PROPERTY : DEFAULTvalue
