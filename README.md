@@ -60,7 +60,7 @@ string Format : null ............... // Column format
 int Order : new List<string>() ..... // Position in column orders
 int Width .......................... // Column width
 ```
-*-Special feature is '**DYNAMIC Settings**' with which Attributes values can be defined at runtime, for all usage types.  
+*-Special feature is '**Dynamic Settings**' with which Attributes values can be defined at runtime, for all usage types.  
 
 Under the hood library uses most efficient packages in their domain:  
 -[Sylvan.Data.Excel](https://github.com/MarkPflug/Sylvan.Data.Excel) for Reading  
