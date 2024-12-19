@@ -1,7 +1,7 @@
 # ExcelIO.FastMapper
 **Excel InputOutput Mapper** lib. for Import to and Export from between Poco class and .xlsx file using attribute annotation on model Properties.
 In addition it has several useful confing options and Export also supports columns formatting.  
-Both Reading and Writing are **very fast** while the package itself is lightweight with minimum depencencies.
+Both Reading and Writing are **very fast** while the package itself is lightweight with minimum dependencies.
 
 Logo  
 <img src="ExcelIO.png" height=60>
