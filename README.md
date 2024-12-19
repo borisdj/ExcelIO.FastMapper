@@ -71,4 +71,4 @@ Library has only those 2 dependecies that themselves are fully self-containd, an
 While doing research for optimal tool, criteria were to be Open Source, with code on Github and having Nuget.  
 Also to be actively maintained, have certain period of development with proven record of usage (Git commits, starts and Nuget downloads).  
 Comparison of several packages for the fastest one:  
-[ExcelLibs.NetCompare](https://docs.google.com/spreadsheets/d/1rF4QEoDmTLB4cbbVL575276vhnfhyfX-KxGk-rcJAiA/edit?gid=0#gid=0)
+[ExcelIO.NetLibs Compare](https://docs.google.com/spreadsheets/d/1rF4QEoDmTLB4cbbVL575276vhnfhyfX-KxGk-rcJAiA/edit?gid=0#gid=0)
