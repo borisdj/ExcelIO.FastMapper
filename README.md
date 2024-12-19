@@ -65,7 +65,7 @@ int Width .......................... // Column width
 Under the hood library uses most efficient packages in their domain:  
 -[Sylvan.Data.Excel](https://github.com/MarkPflug/Sylvan.Data.Excel) for Reading  
 -[LargeXlsx](https://github.com/salvois/LargeXlsx) for Writing as it has formatting option and is still pretty quick.  
-Library has only those 2 dependecies that themselves are fully self-containd, and as such are quite thin.
+Library has only those 2 dependecies that themselves are fully self-containd, and as such are quite thin.  
 (LargeXsql has transitive dependency on *SharpCompress* which is somewhat bigger ~1 MB).  
 
 While doing research for optimal tool, criteria were to be Open Source, with code on Github and having Nuget.  
