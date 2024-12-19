@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelIO.FastMapper", "Excel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelIO.FastMapper.Tests", "ExcelIO.FastMapper.Tests\ExcelIO.FastMapper.Tests.csproj", "{1DDC9BFE-4B7B-4AEE-A2D9-ECF027ECDE5B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelIO.Compare.Tests", "ExcelIO.Compare.Tests\ExcelIO.Compare.Tests.csproj", "{098EA5CC-C575-4F84-94EC-AAC33855AE2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1DDC9BFE-4B7B-4AEE-A2D9-ECF027ECDE5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DDC9BFE-4B7B-4AEE-A2D9-ECF027ECDE5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DDC9BFE-4B7B-4AEE-A2D9-ECF027ECDE5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{098EA5CC-C575-4F84-94EC-AAC33855AE2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{098EA5CC-C575-4F84-94EC-AAC33855AE2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{098EA5CC-C575-4F84-94EC-AAC33855AE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{098EA5CC-C575-4F84-94EC-AAC33855AE2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

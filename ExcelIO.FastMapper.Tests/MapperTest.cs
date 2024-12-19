@@ -29,9 +29,9 @@ namespace ExcelIO.FastMapper.Tests
 
             //if(type == "LargeXlsx")
             {
-                /*using var stream = new MemoryStream();
-                ExcelHandler.ExportToExcelLArgeXml<Item>(data, null, stream);
-                File.WriteAllBytes("testLarge.xlsx", stream.ToArray());
+                //using var stream = new MemoryStream();
+                //ExcelHandler.ExportToExcelLArgeXml<Item>(data, null, stream);
+                //File.WriteAllBytes("testLarge.xlsx", stream.ToArray());
 
                 using (var stream = new MemoryStream())
                 {
@@ -62,7 +62,7 @@ namespace ExcelIO.FastMapper.Tests
                     }
 
                     File.WriteAllBytes("testLarge.xlsx", stream.ToArray());
-                }*/
+                }
 
                 //xlsxWriter.Dispose();
 
