@@ -66,9 +66,9 @@ Under the hood library uses most efficient packages in their domain:
 -[Sylvan.Data.Excel](https://github.com/MarkPflug/Sylvan.Data.Excel) for Reading  
 -[LargeXlsx](https://github.com/salvois/LargeXlsx) for Writing as it has formatting option and is still pretty quick.  
 Library has only those 2 dependecies that themselves are fully self-containd, and as such are quite thin.  
-(LargeXsql has transitive dependency on *SharpCompress* which is somewhat bigger ~1 MB).  
+(LargeXslx has transitive dependency on *SharpCompress* which is somewhat bigger ~1 MB).  
 
 While doing research for optimal tool, criteria were to be Open Source, with code on Github and having Nuget.  
 Also to be actively maintained, have certain period of development with proven record of usage (Git commits, starts and Nuget downloads).  
-Comparison of several packages for the fastest one:  
+Comparison of several packages for the optimal and fastest one:  
 [ExcelIO.NetLibs Compare](https://docs.google.com/spreadsheets/d/1rF4QEoDmTLB4cbbVL575276vhnfhyfX-KxGk-rcJAiA/edit?gid=0#gid=0)
