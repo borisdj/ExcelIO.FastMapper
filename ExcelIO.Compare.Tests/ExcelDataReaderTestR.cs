@@ -5,6 +5,8 @@ namespace ExcelIO.Compare.Tests
 {
     public class ExcelDataReaderTest
     {
+        public static string XlsxFileName { get; set; } = "readerExcel.xlsx";
+
         [Fact]
         public void ReadImporterTest() // ExcelDataReader-Mapping ExcelMapper
         {

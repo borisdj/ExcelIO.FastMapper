@@ -8,12 +8,12 @@ namespace ExcelIO.Compare.Tests
         public static string XlsxFileName { get; set; } = "sylvanData.xlsx";
 
         [Fact]
-        public void WriteTest() // 3 sec (5 MB)
+        public void WriteTest() // 3 sec (file output size 6 mb - smallest)
         {
             var table = new DataTable();
 
             //DataColumn idColumn = table.Columns.Add(nameof(Item.ItemId), typeof(int));
-            //table.PrimaryKey = new DataColumn[] { idColumn };
+            //table.PrimaryKey = new DataColumn[] { idColumn }; // Not needed
 
             table.Columns.Add(nameof(Item.ItemId), typeof(int));
             table.Columns.Add(nameof(Item.IsActive), typeof(string));
@@ -44,7 +44,7 @@ namespace ExcelIO.Compare.Tests
             DataTableReader reader = table.CreateDataReader();
             using (var excelDataWriter = ExcelDataWriter.Create(XlsxFileName))
             {
-                var result = excelDataWriter.Write(reader, "Sheet1");
+                var result = excelDataWriter.Write(reader, BaseData.BaseSheetName);
                 reader.Close();
             }
         }
@@ -73,7 +73,9 @@ namespace ExcelIO.Compare.Tests
                     items.Add(item);
                 }
             } while (edr.NextResult());
-            var count = items.Count();
+            var count = items.Count;
+
+            Assert.Equal(BaseData.NumberOfRows, count);
         }
     }
 }

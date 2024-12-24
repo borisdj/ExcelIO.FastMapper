@@ -10,6 +10,8 @@ namespace ExcelIO.Compare.Tests
 {
     public class ClosedXMLTestRWE
     {
+        public static string XlsxFileName { get; set; } = "closedData.xlsx";
+
         /*[Theory]
         [InlineData("ClosedXML", false)]
         [InlineData("ClosedXML", true)]

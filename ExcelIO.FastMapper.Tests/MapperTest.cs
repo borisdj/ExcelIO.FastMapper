@@ -76,7 +76,6 @@ namespace ExcelIO.FastMapper.Tests
 
                 //stream.WriteTo(toWrite);
 
-
                 //stream.Position = 0;
                 //var streamF = new FileStream("testLarge.xlsx", FileMode.Create, FileAccess.Write);
                 //   streamF.CopyToAsync(toWrite);

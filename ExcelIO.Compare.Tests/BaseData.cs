@@ -12,7 +12,7 @@ namespace ExcelIO.Compare.Tests
         public static List<Item> GetData()
         {
             var data = new List<Item>();
-            for (int i = 1; i < NumberOfRows; i++)
+            for (int i = 1; i <= NumberOfRows; i++)
             {
                 var item = new Item
                 {
