@@ -55,10 +55,12 @@ PROPERTY : DEFAULTvalue
 **ExcelIO Column Attribute** : defaultValue
 ```C#
 bool Ignore : false ................ // Field omitted from Excel
-string Header : 0 .................. // Header Name
+string Header : null ............... // Header Name
 string Format : null ............... // Column format
-int Order : new List<string>() ..... // Position in column orders
+int FormatId : -1 .................. // Column format Id
+int Order : 0 ...................... // Position in column orders
 int Width .......................... // Column width
+enum HeaderFormulaType : 0 ......... // None = 0, SUM = 1, AVERAGE = 2, MIN = 3, MAX = 4
 ```
 *-Special feature is '**Dynamic Settings**' with which Attributes values can be defined at runtime, for all usage types.  
 
