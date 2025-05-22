@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
 using System.Data;
 using Sylvan.Data.Excel;
+using System.Xml.Linq;
+using System.Runtime.CompilerServices;
 
 namespace ExcelIO.FastMapper
 {
@@ -100,17 +102,24 @@ namespace ExcelIO.FastMapper
             var memberBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
             var type = typeof(T);
             //var fieldsDict = type.GetFields(memberBindingFlags).ToDictionary(a => a.Name, a => a.FieldType);
-            //var propertiesDict = type.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
+            var propertiesDict = type.GetProperties(memberBindingFlags).ToDictionary(a => a.Name, a => a.PropertyType);
             var membersData = type.GetFields(memberBindingFlags).Cast<MemberInfo>().Concat(type.GetProperties(memberBindingFlags));
             
             var dynamicSettings = excelMapperConfig.DynamicSettings;
 
             var membersDict = new Dictionary<string, ExcelColumnMapperInfo>();
+            var fastPropertyDict = new Dictionary<string, FastProperty>();
+
             int i = 0;
             foreach (var member in membersData)
             {
                 i++;
                 var attribute = member.GetCustomAttributes<ExcelIOColumnAttribute>().FirstOrDefault();
+
+                if (fastPropertyDict.ContainsKey(member.Name))
+                {
+                    fastPropertyDict.Add(member.Name, FastProperty.GetOrCreate((PropertyInfo)member)); // Filter only properties (Check if Member)
+                }
 
                 if (dynamicSettings != null && dynamicSettings.ContainsKey(member.Name))
                 {
@@ -230,7 +239,8 @@ namespace ExcelIO.FastMapper
                         row = xlsxWriterSheet.BeginRow();
                         foreach (var excelMember in membersOrdered)
                         {
-                            row.Write(excelMember.Header); // XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger
+                            var value = parentPropertyDict[pkName].Get(element);
+                            row.Write(element[excelMember.Header]); // XlsxStyle.Default.With(XlsxNumberFormat.ThousandInteger
                         };
                     }
                     xlsxWriterSheet.SetAutoFilter(1, 1, xlsxWriter.CurrentRowNumber - 1, 9);

@@ -6,7 +6,7 @@ namespace ExcelIO.FastMapper
     public class ExcelIOMapperConfig
     {
         /// <summary>
-        /// When using FileStream and if not custom anme defuatl value is 'ClassName.xlsx'
+        /// When using FileStream and no custom name, default value: 'ClassName.xlsx'
         /// </summary>
         public string FileName { get; set; }
 
@@ -31,19 +31,14 @@ namespace ExcelIO.FastMapper
         public bool UseDynamicColumnWidth { get; set; } = true;
 
         /// <summary>
-        /// Initial value 'False', when set to True header is Wraped
-        /// /</summary>
-        public bool WrapHeader { get; set; } = false;
-
-        /// <summary>
-        /// Has initial value of 1.6; Used when DynamicColumnWidth is True, Coefficient multiples ColumnName Lenght to calcule Width
+        /// Has initial value of 1.6; Used when DynamicColumnWidth is True, Coefficient multiples ColumnName Lenght to calculate Width
         /// /</summary>
         public decimal DynamicColumnWidthCoefficient { get; set; } = 1.6m;
 
         /// <summary>
-        /// Initial value is '1', if changed to 2 or 3 then there will be one or two empty rows above header line
-        /// </summary>
-        public int HeaderRowNumber { get; set; } = 1;
+        /// Initial value 'False', when set to True header is Wraped
+        /// /</summary>
+        public bool WrapHeader { get; set; } = false;
 
         /// <summary>
         /// Initial value is True in which First header row is frozen
@@ -56,19 +51,14 @@ namespace ExcelIO.FastMapper
         public int FreezeColumnNumber { get; set; }
 
         /// <summary>
+        /// Initial value is '1', if changed to 2 or 3 then there will be one or two empty rows above header line
+        /// </summary>
+        public int HeaderRowNumber { get; set; } = 1;
+
+        /// <summary>
         /// Default value: 'Arial Narrow'
         /// </summary>
         public string HeaderFont { get; set; } = "Arial Narrow";
-
-        /// <summary>
-        /// Table Theme type
-        /// </summary>
-        //public XLTableTheme XLTableTheme { get; set; }
-
-        /// <summary>
-        /// Table Style
-        /// </summary>
-        //public IXLStyle XLStyle { get; set; }
 
         /// <summary>
         /// Default value: 'Calibri'
@@ -78,12 +68,12 @@ namespace ExcelIO.FastMapper
         /// <summary>
         /// If not set custom number, default value from base library is '11'
         /// </summary>
-        public double? HeaderFontSize { get; set; }
+        public double? HeaderFontSize { get; set; } = 11;
 
         /// <summary>
         /// If not set custom number, default value from base library is '11'
         /// </summary>
-        public double? DataFontSize { get; set; }
+        public double? DataFontSize { get; set; } = 11;
 
         /// <summary>
         /// Default is False when all props are mapped to columns except those explicitly configued with 'Ignore' param.
@@ -95,5 +85,15 @@ namespace ExcelIO.FastMapper
         ///     Enables Attributes to be defined at runtime, for all usage types. Dict with PropertyName and independent Attribute with parameters values.
         /// </summary>
         public Dictionary<string, ExcelIOColumnAttribute> DynamicSettings { get; set; }
+
+        /// <summary>
+        /// Table Theme type
+        /// </summary>
+        //public XLTableTheme XLTableTheme { get; set; }
+
+        /// <summary>
+        /// Table Style
+        /// </summary>
+        //public IXLStyle XLStyle { get; set; }
     }
 }
