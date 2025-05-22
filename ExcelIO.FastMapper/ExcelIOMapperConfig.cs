@@ -68,12 +68,12 @@ namespace ExcelIO.FastMapper
         /// <summary>
         /// If not set custom number, default value from base library is '11'
         /// </summary>
-        public double? HeaderFontSize { get; set; } = 11;
+        public double? HeaderFontSize { get; set; }
 
         /// <summary>
         /// If not set custom number, default value from base library is '11'
         /// </summary>
-        public double? DataFontSize { get; set; } = 11;
+        public double? DataFontSize { get; set; }
 
         /// <summary>
         /// Default is False when all props are mapped to columns except those explicitly configued with 'Ignore' param.
