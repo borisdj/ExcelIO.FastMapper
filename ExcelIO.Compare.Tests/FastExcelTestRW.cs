@@ -11,12 +11,12 @@ namespace ExcelIO.Compare.Tests
         {
             var data = BaseData.GetData();
 
-            //var templateFile = new FileInfo("template.xlsx"); // using template
-            var outputFile = new FileInfo(XlsxFileName);
+            var templateFile = new FileInfo("fastTemplate.xlsx");
+            var outputFile = new FileInfo("fastData.xlsx");
 
-            using (var fastExcel = new FastExcel.FastExcel(outputFile))
+            using (var fastExcel = new FastExcel.FastExcel(/*templateFile, */outputFile))
             {
-                fastExcel.Write(data, BaseData.BaseSheetName, true);
+                fastExcel.Write(data, BaseData.BaseSheetName, 1);
             }
         }
 

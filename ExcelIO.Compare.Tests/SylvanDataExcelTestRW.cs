@@ -12,7 +12,7 @@ namespace ExcelIO.Compare.Tests
         {
             var table = new DataTable();
 
-            //DataColumn idColumn = table.Columns.Add(nameof(Item.ItemId), typeof(int));
+            //table.Columns.Add(nameof(Item.ItemId), typeof(int));
             //table.PrimaryKey = new DataColumn[] { idColumn }; // Not needed
 
             table.Columns.Add(nameof(Item.ItemId), typeof(int));

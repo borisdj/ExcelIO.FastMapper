@@ -34,24 +34,18 @@ namespace ExcelIO.Compare.Tests
 
     public class Item
     {
-        [XLColumn(Header = nameof(ItemId))]
         public int ItemId { get; set; }
 
-        [XLColumn(Header = "Active", Order = 0)] // Order goes first with attribute XLCol. (0 is default) and those without attribute come last
         public bool IsActive { get; set; }
 
-        [XLColumn(Header = "Full Name")]
         public string Name { get; set; }
 
         public int Amount { get; set; }
 
-        [XLColumn(Order = 5)]
         public decimal Price { get; set; }
 
-        [XLColumn(Order = 4)] // Custom Format with 3 decimal places
         public decimal? Weight { get; set; }
 
-        [XLColumn(Header = "Created")]
         public DateTime DateCreated { get; set; }
 
         //public TimeOnly TimeCreated { get; set; }

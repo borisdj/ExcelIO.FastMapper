@@ -8,13 +8,13 @@ namespace ExcelIO.Compare.Tests
         public static string XlsxFileName { get; set; } = "readerExcel.xlsx";
 
         [Fact]
-        public void ReadImporterTest() // ExcelDataReader-Mapping ExcelMapper
+        public void ReadImporterTest() // Mapping ExcelMapper
         {
             //XLMapper.ImportFromExcel<ItemBase>("testClosed.xlsx");
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            using (var stream = File.Open("testClosed.xlsx", FileMode.Open, FileAccess.Read))
+            using (var stream = File.Open("szlvan.xlsx", FileMode.Open, FileAccess.Read))
             {
                 using var importer = new ExcelImporter(stream);
 
