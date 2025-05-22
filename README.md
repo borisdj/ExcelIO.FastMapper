@@ -35,21 +35,24 @@ Want to **Contact** for Development & Consulting: [www.codis.tech](http://www.co
 **Excel-IO Mapper config**:  
 ```C#
 PROPERTY : DEFAULTvalue
-----------------------------------------------
- 1 FileName, 
- 2 SheetName: "Data",
- 3 UseDefaultColumnFormat: true,
- 4 AutoFilterVisible: true,
- 5 UseDynamicColumnWidth: true,
- 6 WrapHeader: false,
- 7 DynamicColumnWidthCoefficient: false,
- 8 FreezeHeader: true,
- 9 FreezeColumnNumber: true,
-10 HeaderFont: null,
-11 DataFont: null,
-12 ExportOnlyPropertiesWithAttribute: null,
-13 Dictionary<string, ExcelIOColumnAttribute> DynamicSettings
------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
+ 1 FileName,                                 // When using FileStream and no custom name, default value: 'ClassName.xlsx'
+ 2 SheetName: "Data",                        // -
+ 3 UseDefaultColumnFormat: true,             // Format based on column type, integer - thousand separator, decimal/float - 2 digits
+ 4 AutoFilterVisible: true,                  // Header has Filter combo visible
+ 5 UseDynamicColumnWidth: true,              // Width based on Header length, with min 5 and max 15 multiplied by DynamicColumnWidthCoefficient
+ 6 DynamicColumnWidthCoefficient: false,     // When DynamicColumnWidth is True, Coefficient multiples ColumnName Lenght to calculate Width
+ 7 WrapHeader: false,                        // When True the header is Wraped
+ 8 FreezeHeader: true,                       // First header row is frozen
+ 9 FreezeColumnNumber: 0,                    // To freeze first N columns from left side
+10 HeaderRowNumber: 1,                       // If changed to more then 1, there will be that much empty rows above
+11 HeaderFont: 'Arial Narrow',               // Default 'Narrow' for better fit of long column names
+12 DataFont: null,                           // - || -
+13 HeaderFontSize: null,                     // If not set to custom number, default value from base library is '11'
+14 DataFontSize: null,                       // - || -
+13 ExportOnlyPropertiesWithAttribute: false, // set to True all with no explicit attribute are also ignored
+14 Dictionary<string, ExcelIOColumnAttribute> DynamicSettings // Enables Attributes config to be defined at runtime
+-----------------------------------------------------------------------------------------------------------------
 ```
 
 **ExcelIO Column Attribute** : defaultValue
@@ -59,7 +62,7 @@ string Header : null ............... // Header Name
 string Format : null ............... // Column format
 int FormatId : -1 .................. // Column format Id
 int Order : 0 ...................... // Position in column orders
-int Width .......................... // Column width
+int Width : 0 ...................... // Column width
 enum HeaderFormulaType : 0 ......... // None = 0, SUM = 1, AVERAGE = 2, MIN = 3, MAX = 4
 ```
 *-Special feature is '**Dynamic Settings**' with which Attributes values can be defined at runtime, for all usage types.  
