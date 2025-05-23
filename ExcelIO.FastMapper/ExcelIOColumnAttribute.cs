@@ -8,7 +8,7 @@ namespace ExcelIO.FastMapper
     public class ExcelIOColumnAttribute : Attribute
     {
 
-        public string Header { get; set; } // string?
+        public string Header { get; set; }
 
         public bool Ignore { get; set; }
 
